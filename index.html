@@ -3,16 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Page</title>
-    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>Mölkky Admin Page</title>
 </head>
 <body>
-        <h1>Admin Page</h1>
-            <div id="create-team-field">
-                
-            </div>
-            <div id="match-management">
+    <header>
+        <h1>Mölkky Admin Page</h1>
+        <p>チーム・選手の登録と試合スコアの管理</p>
+    </header>
 
+    <main>
+        <!-- ============ 1. TEAM CREATION ============ -->
+        <section class="card" id="team-section">
+            <h2>1. チーム作成 <span class="badge" id="team-badge">0 / 4</span></h2>
+            <p class="hint">1試合につき 2〜4 チーム。各チーム最大 6 名まで登録できます。</p>
+
+            <div class="row">
+                <input type="text" id="team-name-input" placeholder="チーム名を入力" maxlength="30">
+                <button id="add-team-btn">＋ チームを追加</button>
             </div>
+
+            <div class="teams-grid" id="teams-grid"></div>
+        </section>
+
+        <!-- ============ 3. MATCH MANAGEMENT ============ -->
+        <section class="card" id="match-section">
+            <h2>2. 試合管理（スコア入力・集計）</h2>
+            <p class="hint">各選手の現在のスコアを入力すると、チーム合計が自動で計算されます。</p>
+            <div id="match-management"></div>
+        </section>
+    </main>
+
 </body>
 </html>
