@@ -1,7 +1,10 @@
 const MAX_TEAMS = 4;
 const MAX_PLAYERS = 6;
+const MIN_MATCH_TEAMS = 2;
+const MATCH_TEAMS_STORAGE_KEY = 'molkkyMatchTeams';
 
 const teams = [];
+const selectedTeamIds = new Set();
 
 let nextTeamId = 1;
 let nextPlayerId = 1;
@@ -9,11 +12,14 @@ let nextPlayerId = 1;
 const teamNameInput = document.getElementById('team-name-input');
 const addTeamBtn = document.getElementById('add-team-btn');
 const teamsGrid = document.getElementById('teams-grid');
+const matchStartBtn = document.getElementById('match-start-btn');
+const matchStartCount = document.getElementById('match-start-count');
 
 addTeamBtn.addEventListener('click', addTeam);
 teamNameInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') addTeam();
 });
+matchStartBtn.addEventListener('click', startMatch);
 
 function addTeam() {
   const name = teamNameInput.value.trim();
@@ -40,7 +46,30 @@ function deleteTeam(teamId) {
   const idx = teams.findIndex((t) => t.id === teamId);
   if (idx === -1) return;
   teams.splice(idx, 1);
+  selectedTeamIds.delete(teamId);
   render();
+}
+
+function toggleTeamSelection(teamId) {
+  if (selectedTeamIds.has(teamId)) {
+    selectedTeamIds.delete(teamId);
+  } else {
+    selectedTeamIds.add(teamId);
+  }
+  render();
+}
+
+function startMatch() {
+  const selectedTeams = teams.filter((t) => selectedTeamIds.has(t.id));
+  if (selectedTeams.length < MIN_MATCH_TEAMS) return;
+
+  const payload = selectedTeams.map((t) => ({
+    id: t.id,
+    name: t.name,
+    players: t.players.map((p) => ({ id: p.id, name: p.name })),
+  }));
+  localStorage.setItem(MATCH_TEAMS_STORAGE_KEY, JSON.stringify(payload));
+  window.location.href = 'overlay.html';
 }
 
 function addPlayer(teamId, input) {
@@ -70,9 +99,14 @@ function renderTeams() {
   teamsGrid.innerHTML = '';
 
   teams.forEach((team) => {
+    const selected = selectedTeamIds.has(team.id);
+
     const card = document.createElement('article');
-    card.className = 'team-card';
+    card.className = `team-card${selected ? ' selected' : ''}`;
     card.dataset.teamId = String(team.id);
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-pressed', String(selected));
 
     const count = team.players.length;
     const full = count >= MAX_PLAYERS;
@@ -81,7 +115,7 @@ function renderTeams() {
       <div class="team-card__header">
         <strong>${escapeHtml(team.name)}</strong>
         <span class="team-card__count" data-full="${full}">${count}/${MAX_PLAYERS}</span>
-        <button type="button" class="secondary" data-action="delete-team">削除</button>
+        <button type="button" class="team-card__delete" data-action="delete-team" aria-label="チームを削除">×</button>
       </div>
       <div class="team-card__players"></div>
       <div class="team-card__add-player">
@@ -89,6 +123,18 @@ function renderTeams() {
         <button type="button">＋ 追加</button>
       </div>
     `;
+
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('button, input')) return;
+      toggleTeamSelection(team.id);
+    });
+    card.addEventListener('keydown', (e) => {
+      if (e.target.closest('button, input')) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleTeamSelection(team.id);
+      }
+    });
 
     card.querySelector('[data-action="delete-team"]').addEventListener('click', () => deleteTeam(team.id));
 
@@ -120,8 +166,15 @@ function renderTeams() {
   });
 }
 
+function renderMatchStart() {
+  const count = selectedTeamIds.size;
+  matchStartCount.textContent = String(count);
+  matchStartBtn.hidden = count < MIN_MATCH_TEAMS;
+}
+
 function render() {
   renderTeams();
+  renderMatchStart();
 }
 
 function escapeHtml(text) {

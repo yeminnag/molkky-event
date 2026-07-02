@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="overlay.css">
+    <title>Mölkky Match Overlay</title>
+</head>
+<body class="overlay-body">
+    <!-- ============ Broadcast display (clean, for OBS capture) ============ -->
+    <section class="overlay-broadcast" id="broadcast-area"></section>
+
+    <!-- ============ Admin controls (score entry) ============ -->
+    <section class="overlay-controls" id="controls-area">
+        <div class="overlay-controls__bar">
+            <a class="overlay-back" href="index.html">← 管理画面に戻る</a>
+            <button type="button" id="reset-match-btn" class="secondary">試合をリセット</button>
+        </div>
+        <div class="control-cards" id="control-cards"></div>
+    </section>
+
+    <script src="overlay.js"></script>
+</body>
+</html>

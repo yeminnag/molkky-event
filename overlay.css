@@ -1,0 +1,199 @@
+/* =========================================================
+   Mölkky Match Overlay — broadcast display + score controls
+   ========================================================= */
+
+.overlay-body {
+  background: var(--pine-950);
+  background-image: none;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Broadcast display (top, clean for OBS capture) ---------- */
+
+.overlay-broadcast {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.5rem;
+  padding: 3rem 2rem;
+  min-height: 40vh;
+}
+
+.overlay-empty {
+  margin: auto;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--birch-200);
+  line-height: 1.8;
+}
+
+.team-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 220px;
+  padding: 1.75rem 2.25rem;
+  background: var(--pine-900);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.team-panel__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+  color: var(--birch-100);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: center;
+  word-break: break-word;
+}
+
+.team-panel__score {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  line-height: 1;
+  color: var(--gold);
+}
+
+.team-panel__badge {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  color: var(--pine-950);
+  background: var(--gold);
+  padding: 0.25rem 0.9rem;
+  border-radius: 999px;
+}
+
+.team-panel--winner {
+  border-color: var(--gold);
+  background: var(--pine-800);
+  box-shadow: 0 0 0 3px rgba(195, 146, 47, 0.5), var(--shadow-card);
+  animation: winner-glow 1.4s ease-in-out infinite;
+}
+
+@keyframes winner-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(195, 146, 47, 0.5), var(--shadow-card);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(195, 146, 47, 0.25), var(--shadow-card);
+  }
+}
+
+/* ---------- Admin controls (bottom, score entry) ---------- */
+
+.overlay-controls {
+  flex: 1 1 auto;
+  background: var(--birch-100);
+  border-top: 3px solid var(--pine-800);
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+.overlay-controls__bar {
+  max-width: 1000px;
+  margin: 0 auto 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.overlay-back {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--pine-900);
+  text-decoration: none;
+}
+
+.overlay-back:hover {
+  text-decoration: underline;
+}
+
+.control-cards {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.control-card {
+  background: #fffdf7;
+  border: 1px solid var(--birch-300);
+  border-radius: 10px;
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.control-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--birch-300);
+}
+
+.control-card__header strong {
+  font-size: 1.02rem;
+  color: var(--pine-900);
+  word-break: break-word;
+}
+
+.control-card__score {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--pin-red);
+  flex-shrink: 0;
+}
+
+.control-card__players {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted-600);
+}
+
+.point-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.point-btn {
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+}
+
+.control-card__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 560px) {
+  .overlay-broadcast {
+    padding: 2rem 1rem;
+  }
+
+  .overlay-controls__bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .point-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

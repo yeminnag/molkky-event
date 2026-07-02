@@ -21,9 +21,15 @@
                 <button id="add-team-btn">＋ チームを追加</button>
             </div>
 
+            <p class="hint">チームカードをクリックして試合に参加させるチームを2つ以上選択してください。</p>
+
             <div class="teams-grid" id="teams-grid"></div>
         </section>
     </main>
+
+    <button type="button" id="match-start-btn" class="match-start-fab" hidden>
+        ▶ 試合開始（<span id="match-start-count">0</span>チーム選択中）
+    </button>
 
     <script src="app.js"></script>
 </body>

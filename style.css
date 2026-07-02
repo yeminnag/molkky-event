@@ -86,7 +86,7 @@ header p {
 /* ---------- Layout ---------- */
 
 main {
-  max-width: 900px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 0 1.25rem 4rem;
   display: flex;
@@ -280,7 +280,7 @@ button.toggle.selected {
 
 .teams-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
 }
 
@@ -289,10 +289,41 @@ button.toggle.selected {
 }
 
 .team-card {
+  min-width: 0;
   background: #fffdf7;
-  border: 1px solid var(--birch-300);
+  border: 2px solid var(--birch-300);
   border-radius: 10px;
   padding: 1rem 1.1rem 1.15rem;
+  cursor: pointer;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, transform 0.08s ease;
+}
+
+.team-card:hover {
+  border-color: var(--pine-800);
+}
+
+.team-card.selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(195, 146, 47, 0.35);
+  background: var(--birch-100);
+}
+
+.team-card:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.team-card__delete {
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .team-card__header strong {
@@ -428,6 +459,45 @@ button.toggle.selected {
   color: var(--ok-green);
 }
 
+/* ---------- Floating match-start button ---------- */
+
+.match-start-fab {
+  position: fixed;
+  left: 50%;
+  bottom: 1.75rem;
+  transform: translateX(-50%);
+  z-index: 100;
+  padding: 0.9rem 1.6rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  background: var(--gold);
+  border-color: var(--gold-dark);
+  color: var(--pine-950);
+  box-shadow: 0 10px 24px -8px rgba(23, 42, 31, 0.55);
+  animation: match-start-pop 0.18s ease;
+}
+
+.match-start-fab:hover {
+  background: var(--gold-dark);
+  color: var(--birch-100);
+}
+
+.match-start-fab[hidden] {
+  display: none;
+}
+
+@keyframes match-start-pop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 560px) {
@@ -463,6 +533,26 @@ button.toggle.selected {
 
   .score-row {
     grid-template-columns: 1fr 4rem 2.5rem;
+  }
+
+  .match-start-fab {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    transform: none;
+    width: calc(100% - 2rem);
+    text-align: center;
+  }
+
+  @keyframes match-start-pop {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
