@@ -1,0 +1,473 @@
+/* =========================================================
+   Mölkky Admin Page — stylesheet
+   Theme: outdoor lawn (pine green) + birch wood + pin red
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --pine-950: #172a1f;
+  --pine-900: #1e3728;
+  --pine-800: #274633;
+  --pine-stripe: #1a3024;
+
+  --birch-100: #f4ecd8;
+  --birch-200: #e8d9b8;
+  --birch-300: #d9c399;
+
+  --ink-900: #23271c;
+  --ink-600: #4c4a3d;
+  --muted-600: #756e5c;
+
+  --pin-red: #c33c2e;
+  --pin-red-dark: #97281d;
+  --pin-red-light: #f0d6d1;
+
+  --gold: #c3922f;
+  --gold-dark: #96701f;
+
+  --ok-green: #3d6b3f;
+
+  --radius-card: 14px;
+  --radius-control: 8px;
+  --shadow-card: 0 2px 0 rgba(23, 42, 31, 0.06), 0 8px 20px -12px rgba(23, 42, 31, 0.35);
+
+  --font-display: 'Archivo Black', 'Hiragino Sans', sans-serif;
+  --font-body: 'Work Sans', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink-900);
+  background-color: var(--pine-900);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--pine-stripe) 0,
+    var(--pine-stripe) 48px,
+    var(--pine-900) 48px,
+    var(--pine-900) 96px
+  );
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+#match-section[hidden] {
+  display: none;
+}
+
+/* ---------- Header ---------- */
+
+header {
+  padding: 2.75rem 1.5rem 2.25rem;
+  text-align: center;
+  color: var(--birch-100);
+}
+
+header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  letter-spacing: 0.01em;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+
+header p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--birch-200);
+}
+
+/* ---------- Layout ---------- */
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.card {
+  background: var(--birch-100);
+  border: 1px solid var(--birch-300);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 1.75rem 1.75rem 2rem;
+}
+
+.card h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  color: var(--pine-900);
+}
+
+.card h2 .badge {
+  margin-left: auto;
+}
+
+.hint {
+  margin: 0 0 1.25rem;
+  font-size: 0.88rem;
+  color: var(--muted-600);
+}
+
+/* ---------- Pin-shaped badge (section headers only) ---------- */
+
+.badge,
+.team-score-card__total {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.6rem;
+  padding: 0.2rem 0.7rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  color: var(--birch-100);
+  background: var(--pine-800);
+  border-radius: 999px 999px 6px 6px;
+  border: 2px solid var(--gold);
+  border-bottom-width: 3px;
+  line-height: 1.4;
+}
+
+.team-card__count {
+  margin-left: auto;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted-600);
+}
+
+.team-card__count[data-full='true'] {
+  color: var(--pin-red);
+}
+
+/* ---------- Row: input + button ---------- */
+
+.row {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+input[type='text'],
+input[type='number'] {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--birch-300);
+  border-radius: var(--radius-control);
+  background: #fffdf7;
+  color: var(--ink-900);
+}
+
+input[type='text']:focus,
+input[type='number']:focus {
+  outline: none;
+  border-color: var(--pin-red);
+  box-shadow: 0 0 0 3px var(--pin-red-light);
+}
+
+input::placeholder {
+  color: var(--muted-600);
+}
+
+button {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--pin-red-dark);
+  background: var(--pin-red);
+  color: #fff8f2;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+button:hover {
+  background: var(--pin-red-dark);
+}
+
+button:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 1px;
+}
+
+button.secondary,
+.player-row__remove,
+.team-card__header button {
+  background: transparent;
+  color: var(--pin-red-dark);
+  border: 1px solid var(--birch-300);
+}
+
+button.secondary:hover,
+.player-row__remove:hover,
+.team-card__header button:hover {
+  background: var(--pin-red-light);
+  border-color: var(--pin-red);
+}
+
+button:disabled {
+  background: var(--birch-300);
+  border-color: var(--birch-300);
+  color: var(--muted-600);
+  cursor: not-allowed;
+  transform: none;
+}
+
+button.toggle {
+  background: #fffdf7;
+  color: var(--pine-900);
+  border: 2px solid var(--birch-300);
+}
+
+button.toggle:hover:not(:disabled) {
+  border-color: var(--pine-800);
+  background: var(--birch-100);
+}
+
+button.toggle.selected {
+  background: var(--pine-800);
+  color: var(--birch-100);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(195, 146, 47, 0.35);
+}
+
+.team-select-row {
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.match-team-select {
+  margin-bottom: 1.25rem;
+}
+
+.match-select-status {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--pine-800);
+}
+
+.team-card__header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.teams-grid:empty {
+  display: none;
+}
+
+.team-card {
+  background: #fffdf7;
+  border: 1px solid var(--birch-300);
+  border-radius: 10px;
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.team-card__header strong {
+  font-size: 1rem;
+  color: var(--pine-900);
+  word-break: break-word;
+}
+
+.team-card__players {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.team-card__players:empty::before {
+  content: '選手がまだいません';
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted-600);
+  padding: 0.35rem 0;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--birch-100);
+  border-radius: 6px;
+  font-size: 0.88rem;
+}
+
+.player-row__name {
+  word-break: break-word;
+}
+
+.player-row__remove {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.78rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.team-card__add-player {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.team-card__add-player input {
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.team-card__add-player button {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+}
+
+/* ---------- Match management ---------- */
+
+.match-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--muted-600);
+  border: 1px dashed var(--birch-300);
+  border-radius: 10px;
+  background: #fffdf7;
+}
+
+.match-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.team-score-card {
+  background: #fffdf7;
+  border: 1px solid var(--birch-300);
+  border-radius: 10px;
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.team-score-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--birch-300);
+}
+
+.team-score-card__header strong {
+  font-size: 1.02rem;
+  color: var(--pine-900);
+  word-break: break-word;
+}
+
+.team-score-card__total {
+  background: var(--pin-red);
+  font-size: 0.9rem;
+  min-width: 2.9rem;
+  flex-shrink: 0;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: 1fr 4.5rem 3rem;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+}
+
+.score-row__name {
+  font-size: 0.9rem;
+  color: var(--ink-600);
+  word-break: break-word;
+}
+
+.score-row__input {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.score-row__points {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  text-align: right;
+  color: var(--ok-green);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 560px) {
+  header {
+    padding: 2rem 1rem 1.75rem;
+  }
+
+  .card {
+    padding: 1.35rem 1.1rem 1.5rem;
+  }
+
+  .card h2 .badge {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  .row button {
+    width: 100%;
+  }
+
+  .team-card__add-player {
+    flex-direction: column;
+  }
+
+  .team-card__add-player button {
+    width: 100%;
+  }
+
+  .score-row {
+    grid-template-columns: 1fr 4rem 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
