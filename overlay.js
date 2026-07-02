@@ -19,7 +19,10 @@ function loadMatch() {
   const savedState = localStorage.getItem(MATCH_STATE_STORAGE_KEY);
   if (savedState) {
     try {
-      return JSON.parse(savedState);
+      const parsed = JSON.parse(savedState);
+      if (parsed && Array.isArray(parsed.teams)) {
+        return { teams: parsed.teams.map(normalizeTeam) };
+      }
     } catch (e) {
       /* fall through to rebuild from selected teams */
     }
@@ -36,15 +39,20 @@ function loadMatch() {
   }
   if (!Array.isArray(selectedTeams) || selectedTeams.length < 2) return null;
 
+  return { teams: selectedTeams.map(normalizeTeam) };
+}
+
+function normalizeTeam(t) {
   return {
-    teams: selectedTeams.map((t) => ({
-      id: t.id,
-      name: t.name,
-      players: t.players || [],
-      score: 0,
-      history: [],
-      winner: false,
-    })),
+    id: t.id,
+    name: t.name,
+    players: t.players || [],
+    score: t.score || 0,
+    history: Array.isArray(t.history) ? t.history : [],
+    winner: t.winner || false,
+    currentPlayerIndex: t.currentPlayerIndex || 0,
+    lastPlayerName: t.lastPlayerName || null,
+    lastPoints: typeof t.lastPoints === 'number' ? t.lastPoints : null,
   };
 }
 
@@ -56,13 +64,26 @@ function hasWinner() {
   return match.teams.some((t) => t.winner);
 }
 
+function getCurrentPlayer(team) {
+  if (!team.players.length) return null;
+  return team.players[team.currentPlayerIndex % team.players.length];
+}
+
 function addPoints(teamId, points) {
   const team = match.teams.find((t) => t.id === teamId);
   if (!team || hasWinner()) return;
 
-  team.history.push(team.score);
-  const newScore = team.score + points;
+  const currentPlayer = getCurrentPlayer(team);
 
+  team.history.push({
+    score: team.score,
+    winner: team.winner,
+    currentPlayerIndex: team.currentPlayerIndex,
+    lastPlayerName: team.lastPlayerName,
+    lastPoints: team.lastPoints,
+  });
+
+  const newScore = team.score + points;
   if (newScore === WIN_SCORE) {
     team.score = WIN_SCORE;
     team.winner = true;
@@ -72,6 +93,13 @@ function addPoints(teamId, points) {
     team.score = newScore;
   }
 
+  team.lastPlayerName = currentPlayer ? currentPlayer.name : null;
+  team.lastPoints = points;
+
+  if (team.players.length) {
+    team.currentPlayerIndex = (team.currentPlayerIndex + 1) % team.players.length;
+  }
+
   saveMatch();
   render();
 }
@@ -79,8 +107,12 @@ function addPoints(teamId, points) {
 function undo(teamId) {
   const team = match.teams.find((t) => t.id === teamId);
   if (!team || !team.history.length) return;
-  team.score = team.history.pop();
-  team.winner = false;
+  const prev = team.history.pop();
+  team.score = prev.score;
+  team.winner = prev.winner;
+  team.currentPlayerIndex = prev.currentPlayerIndex;
+  team.lastPlayerName = prev.lastPlayerName;
+  team.lastPoints = prev.lastPoints;
   saveMatch();
   render();
 }
@@ -91,6 +123,9 @@ function resetMatch() {
     t.score = 0;
     t.history = [];
     t.winner = false;
+    t.currentPlayerIndex = 0;
+    t.lastPlayerName = null;
+    t.lastPoints = null;
   });
   saveMatch();
   render();
@@ -112,12 +147,21 @@ function render() {
 function renderBroadcast() {
   broadcastArea.innerHTML = '';
   match.teams.forEach((team) => {
+    const currentPlayer = getCurrentPlayer(team);
+    const currentPlayerName = currentPlayer ? escapeHtml(currentPlayer.name) : '-';
+    const hasLastScore = team.lastPoints !== null;
+    const lastScoreText = hasLastScore
+      ? `${team.lastPlayerName ? escapeHtml(team.lastPlayerName) : '-'} +${team.lastPoints}点`
+      : '';
+
     const panel = document.createElement('div');
     panel.className = `team-panel${team.winner ? ' team-panel--winner' : ''}`;
     panel.innerHTML = `
       <div class="team-panel__name">${escapeHtml(team.name)}</div>
       <div class="team-panel__score">${team.score}</div>
       <div class="team-panel__badge" ${team.winner ? '' : 'hidden'}>WIN!</div>
+      <div class="team-panel__turn">現在のプレイヤー：${currentPlayerName}</div>
+      <div class="team-panel__last-score" ${hasLastScore ? '' : 'hidden'}>${lastScoreText}</div>
     `;
     broadcastArea.appendChild(panel);
   });
@@ -130,6 +174,13 @@ function renderControls() {
   match.teams.forEach((team) => {
     const card = document.createElement('article');
     card.className = 'control-card';
+
+    const currentPlayer = getCurrentPlayer(team);
+    const currentPlayerName = currentPlayer ? escapeHtml(currentPlayer.name) : '-';
+    const hasLastScore = team.lastPoints !== null;
+    const lastScoreText = hasLastScore
+      ? `${team.lastPlayerName ? escapeHtml(team.lastPlayerName) : '-'} が ${team.lastPoints}点 獲得`
+      : '';
 
     const playerNames = team.players.length
       ? team.players.map((p) => escapeHtml(p.name)).join('、')
@@ -145,6 +196,8 @@ function renderControls() {
         <strong>${escapeHtml(team.name)}</strong>
         <span class="control-card__score">${team.score} / ${WIN_SCORE}</span>
       </div>
+      <p class="control-card__turn">現在のプレイヤー：<strong>${currentPlayerName}</strong></p>
+      <p class="control-card__last" ${hasLastScore ? '' : 'hidden'}>${lastScoreText}</p>
       <p class="control-card__players">${playerNames}</p>
       <div class="point-grid">${pointButtons}</div>
       <div class="control-card__actions">

@@ -15,11 +15,11 @@
 
 .overlay-broadcast {
   flex: 0 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
   gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
   padding: 3rem 2rem;
   min-height: 40vh;
 }
@@ -74,6 +74,18 @@
   border-radius: 999px;
 }
 
+.team-panel__turn {
+  font-size: 0.85rem;
+  color: var(--birch-200);
+}
+
+.team-panel__last-score {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+
 .team-panel--winner {
   border-color: var(--gold);
   background: var(--pine-800);
@@ -121,10 +133,10 @@
 }
 
 .control-cards {
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
   gap: 1rem;
 }
 
@@ -158,6 +170,19 @@
   flex-shrink: 0;
 }
 
+.control-card__turn {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  color: var(--pine-800);
+}
+
+.control-card__last {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pin-red-dark);
+}
+
 .control-card__players {
   margin: 0 0 0.75rem;
   font-size: 0.85rem;
@@ -185,7 +210,12 @@
 
 @media (max-width: 560px) {
   .overlay-broadcast {
+    grid-template-columns: 1fr;
     padding: 2rem 1rem;
+  }
+
+  .control-cards {
+    grid-template-columns: 1fr;
   }
 
   .overlay-controls__bar {
