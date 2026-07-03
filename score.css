@@ -1,0 +1,147 @@
+/* =========================================================
+   Score management panel (dashboard)
+   ========================================================= */
+
+.score-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 1000px;
+  margin: 0 0 1rem;
+}
+
+.score-empty {
+  max-width: 520px;
+  padding: 2rem 1.5rem;
+  background: rgba(244, 236, 216, 0.08);
+  border: 1px dashed rgba(244, 236, 216, 0.25);
+  border-radius: var(--radius-card);
+  color: var(--birch-100);
+  text-align: center;
+}
+
+.score-empty p {
+  margin: 0 0 1rem;
+  line-height: 1.7;
+}
+
+.score-preview {
+  max-width: 1000px;
+  margin: 0 0 1rem;
+}
+
+.score-preview__title {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--birch-200);
+}
+
+.score-preview__stage {
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+.score-preview__stage .overlay-empty {
+  color: var(--birch-200);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  text-shadow: none;
+}
+
+.control-cards {
+  max-width: 1000px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.control-card {
+  background: var(--birch-100);
+  border: 1px solid var(--birch-300);
+  border-radius: 10px;
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.control-card--active {
+  border-color: var(--pin-red);
+  box-shadow: 0 0 0 2px rgba(195, 60, 46, 0.2);
+}
+
+.control-card--out {
+  opacity: 0.65;
+}
+
+.control-card__misses {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted-600);
+}
+
+.control-card__turn {
+  margin: 0 0 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--pin-red);
+}
+
+.control-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--birch-300);
+}
+
+.control-card__header strong {
+  font-size: 1.02rem;
+  color: var(--pine-900);
+  word-break: break-word;
+}
+
+.control-card__score {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--pin-red);
+  flex-shrink: 0;
+}
+
+.control-card__players {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted-600);
+}
+
+.point-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.point-btn {
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+}
+
+.control-card__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.control-card__actions .miss-btn {
+  flex: 1;
+}
+
+@media (max-width: 560px) {
+  .point-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

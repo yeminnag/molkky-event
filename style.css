@@ -6,10 +6,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-  --pine-950: #172a1f;
+  --pine-950: #1b1d1c;
   --pine-900: #1e3728;
   --pine-800: #274633;
-  --pine-stripe: #1a3024;
+  --pine-stripe: #232624;
 
   --birch-100: #f4ecd8;
   --birch-200: #e8d9b8;
@@ -45,13 +45,6 @@ body {
   font-family: var(--font-body);
   color: var(--ink-900);
   background-color: var(--pine-900);
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--pine-stripe) 0,
-    var(--pine-stripe) 48px,
-    var(--pine-900) 48px,
-    var(--pine-900) 96px
-  );
   min-height: 100vh;
   line-height: 1.6;
 }
@@ -212,8 +205,12 @@ input:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 1px;
 }
+button.secondary{
+  background: var(--birch-100);
+  color: var(--pine-900);
+  border: 1px solid var(--birch-300);
+}
 
-button.secondary,
 .player-row__remove,
 .team-card__header button {
   background: transparent;
@@ -221,7 +218,11 @@ button.secondary,
   border: 1px solid var(--birch-300);
 }
 
-button.secondary:hover,
+button.secondary:hover{
+  background: var(--birch-200);
+  border-color: var(--birch-300);
+}
+
 .player-row__remove:hover,
 .team-card__header button:hover {
   background: var(--pin-red-light);
@@ -279,17 +280,24 @@ button.toggle.selected {
 }
 
 .teams-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
+  justify-content: flex-start;
+  min-height: 1px;
 }
 
-.teams-grid:empty {
-  display: none;
+.teams-grid__empty {
+  margin: 0;
+  width: 100%;
+  padding: 1rem 0;
+  font-size: 0.9rem;
+  color: var(--muted-600);
 }
 
 .team-card {
-  min-width: 0;
+  width: 220px;
+  flex-shrink: 0;
   background: #fffdf7;
   border: 2px solid var(--birch-300);
   border-radius: 10px;
@@ -475,7 +483,6 @@ button.toggle.selected {
   border-color: var(--gold-dark);
   color: var(--pine-950);
   box-shadow: 0 10px 24px -8px rgba(23, 42, 31, 0.55);
-  animation: match-start-pop 0.18s ease;
 }
 
 .match-start-fab:hover {
@@ -483,20 +490,15 @@ button.toggle.selected {
   color: var(--birch-100);
 }
 
+.match-start-fab:active {
+  transform: translateX(-50%);
+}
+
 .match-start-fab[hidden] {
   display: none;
 }
 
-@keyframes match-start-pop {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
+
 
 /* ---------- Responsive ---------- */
 
@@ -544,16 +546,10 @@ button.toggle.selected {
     text-align: center;
   }
 
-  @keyframes match-start-pop {
-    from {
-      opacity: 0;
-      transform: translateY(0.5rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .match-start-fab:active {
+    transform: none;
   }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

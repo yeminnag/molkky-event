@@ -4,33 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Mölkky Admin Page</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="panels.css">
+    <link rel="stylesheet" href="overlay.css">
+    <link rel="stylesheet" href="score.css">
+    <link rel="stylesheet" href="history.css">
+    <title>Mölkky Dashboard</title>
 </head>
-<body>
-    <header>
-        <h1>アドミンページ</h1>
-    </header>
+<body class="dashboard-body">
+    <aside class="dashboard-aside" aria-label="メニュー">
+        <div class="dashboard-brand">
+            <div>
+                <strong>もルック</strong>
+                <span>ダッシュボード</span>
+            </div>
+        </div>
 
-    <main>
-        <!-- ============ 1. TEAM CREATION ============ -->
-        <section class="card" id="team-section">
-            <h2>チーム作成 </h2>
+        <nav class="dashboard-nav">
+            <button type="button" class="dashboard-tab is-active" data-panel="teams">チーム管理</button>
+            <button type="button" class="dashboard-tab" data-panel="score">スコア管理</button>
+            <button type="button" class="dashboard-tab" data-panel="history">過去の試合</button>
+            <a class="dashboard-tab dashboard-tab--link" href="overlay.html" target="_blank" rel="noopener">配信オーバーレイ ↗</a>
+        </nav>
+    </aside>
 
-            <div class="row">
-                <input type="text" id="team-name-input" placeholder="チーム名を入力" maxlength="30">
-                <button id="add-team-btn">＋ チームを追加</button>
+    <div class="dashboard-main">
+        <section class="dashboard-panel is-active" id="panel-teams" data-panel="teams">
+            <div class="card" id="team-section">
+                <h2>チーム作成</h2>
+                <div class="row">
+                    <input type="text" id="team-name-input" placeholder="チーム名を入力" maxlength="30">
+                    <button type="button" id="add-team-btn">追加</button>
+                </div>
+                <div class="teams-grid" id="teams-grid"></div>
             </div>
 
-            <p class="hint">チームカードをクリックして試合に参加させるチームを2つ以上選択してください。</p>
-
-            <div class="teams-grid" id="teams-grid"></div>
+            <button type="button" id="match-start-btn" class="match-start-fab" hidden>
+                試合開始
+            </button>
         </section>
-    </main>
 
-    <button type="button" id="match-start-btn" class="match-start-fab" hidden>
-        ▶ 試合開始（<span id="match-start-count">0</span>チーム選択中）
-    </button>
+        <section class="dashboard-panel" id="panel-score" data-panel="score" hidden>
 
-    <script src="app.js"></script>
+            
+            
+            
+            <div class="score-preview" id="score-preview" hidden>
+                <h2 class="score-preview__title">配信プレビュー</h2>
+                <div class="score-preview__stage">
+                    <div class="team-panels" id="team-panels"></div>
+                </div>
+            </div>
+            
+            <div class="score-toolbar">
+                <button type="button" id="reset-match-btn" class="secondary">試合をリセット</button>
+            </div>
+
+            <div class="score-empty" id="score-empty" hidden>
+                <p>試合が開始されていません。</p>
+                <button type="button" class="secondary" data-goto="teams">チーム管理へ</button>
+            </div>
+            <div class="control-cards" id="control-cards"></div>
+        </section>
+
+        <section class="dashboard-panel" id="panel-history" data-panel="history" hidden>
+
+            <div class="history-toolbar">
+                <button type="button" id="clear-history-btn" class="secondary" hidden>すべて削除</button>
+            </div>
+
+            <p class="history-empty" id="history-empty">保存された試合はまだありません。</p>
+            <div class="history-list" id="history-list"></div>
+        </section>
+    </div>
+
+    <script src="match.js"></script>
+    <script src="team-panels.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="teams.js"></script>
+    <script src="score.js"></script>
+    <script src="history.js"></script>
 </body>
 </html>
