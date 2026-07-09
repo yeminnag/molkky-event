@@ -88,8 +88,6 @@ main {
 }
 
 .card {
-  background: var(--birch-100);
-  border: 1px solid var(--birch-300);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: 1.75rem 1.75rem 2rem;
@@ -103,7 +101,7 @@ main {
   align-items: center;
   flex-wrap: wrap;
   gap: 0.6rem;
-  color: var(--pine-900);
+  color: var(--birch-100);
 }
 
 .card h2 .badge {
@@ -182,7 +180,7 @@ button {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.9rem;
-  padding: 0.65rem 1.1rem;
+  padding: 0.65rem 3rem;
   border-radius: var(--radius-control);
   border: 1px solid var(--pin-red-dark);
   background: var(--pin-red);
@@ -368,6 +366,7 @@ button.toggle.selected {
 
 .player-row__name {
   word-break: break-word;
+  color: var(--ink-900);
 }
 
 .player-row__remove {

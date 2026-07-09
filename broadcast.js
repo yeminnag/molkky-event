@@ -4,7 +4,7 @@ function render() {
   renderTeamPanels(
     teamPanels,
     MolkkyMatch.get(),
-    '試合データがありません。<br>ダッシュボードで試合を開始してください。',
+    'まもなく試合を開始します。<br>少々お待ちください。',
   );
 }
 

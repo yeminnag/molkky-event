@@ -112,7 +112,7 @@ function renderTeams() {
   if (!teamsGrid) return;
 
   if (teams.length === 0) {
-    teamsGrid.innerHTML = '<p class="teams-grid__empty">チームを追加してください</p>';
+    teamsGrid.innerHTML = '<p class="teams-grid__empty"></p>';
     return;
   }
 

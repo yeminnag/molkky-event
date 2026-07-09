@@ -26,11 +26,6 @@ body.overlay-body {
   width: 100%;
 }
 
-.score-preview__stage .overlay-empty {
-  color: var(--birch-200);
-  text-shadow: none;
-}
-
 @media (max-width: 560px) {
   .overlay-broadcast {
     padding: 0.5rem;
