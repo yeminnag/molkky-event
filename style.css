@@ -207,6 +207,7 @@ button.secondary{
   background: var(--birch-100);
   color: var(--pine-900);
   border: 1px solid var(--birch-300);
+  padding: 7px 10px;
 }
 
 .player-row__remove,

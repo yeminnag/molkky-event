@@ -2,6 +2,8 @@ const controlCards = document.getElementById('control-cards');
 const scoreEmpty = document.getElementById('score-empty');
 const scorePreview = document.getElementById('score-preview');
 const teamPanels = document.getElementById('team-panels');
+const scoresheetSide = document.getElementById('scoresheet-side');
+const scoresheet = document.getElementById('scoresheet');
 const resetMatchBtn = document.getElementById('reset-match-btn');
 
 resetMatchBtn.addEventListener('click', () => {
@@ -18,12 +20,16 @@ function render() {
     controlCards.innerHTML = '';
     scoreEmpty.hidden = false;
     scorePreview.hidden = true;
+    scoresheetSide.hidden = true;
+    renderScoreSheet(scoresheet, null);
     return;
   }
 
   scoreEmpty.hidden = true;
   scorePreview.hidden = false;
+  scoresheetSide.hidden = false;
   renderTeamPanels(teamPanels, match);
+  renderScoreSheet(scoresheet, match);
   renderControls(match);
 }
 

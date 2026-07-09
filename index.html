@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="panels.css">
     <link rel="stylesheet" href="overlay.css">
     <link rel="stylesheet" href="score.css">
+    <link rel="stylesheet" href="scoresheet.css">
     <link rel="stylesheet" href="history.css">
     <title>Mölkky Dashboard</title>
 </head>
@@ -45,26 +46,30 @@
         </section>
 
         <section class="dashboard-panel" id="panel-score" data-panel="score" hidden>
+            <div class="score-layout">
+                <div class="score-layout__main">
+                    <div class="score-preview" id="score-preview" hidden>
+                        <h2 class="score-preview__title">配信プレビュー</h2>
+                        <div class="score-preview__stage">
+                            <div class="team-panels" id="team-panels"></div>
+                        </div>
+                    </div>
 
-            
-            
-            
-            <div class="score-preview" id="score-preview" hidden>
-                <h2 class="score-preview__title">配信プレビュー</h2>
-                <div class="score-preview__stage">
-                    <div class="team-panels" id="team-panels"></div>
+                    <div class="score-toolbar">
+                        <button type="button" id="reset-match-btn" class="secondary">試合をリセット</button>
+                    </div>
+
+                    <div class="score-empty" id="score-empty" hidden>
+                        <p>試合が開始されていません。</p>
+                        <button type="button" class="secondary" data-goto="teams">チーム管理へ</button>
+                    </div>
+                    <div class="control-cards" id="control-cards"></div>
                 </div>
-            </div>
-            
-            <div class="score-toolbar">
-                <button type="button" id="reset-match-btn" class="secondary">試合をリセット</button>
-            </div>
 
-            <div class="score-empty" id="score-empty" hidden>
-                <p>試合が開始されていません。</p>
-                <button type="button" class="secondary" data-goto="teams">チーム管理へ</button>
+                <aside class="score-layout__side" id="scoresheet-side" hidden>
+                    <div class="scoresheet" id="scoresheet"></div>
+                </aside>
             </div>
-            <div class="control-cards" id="control-cards"></div>
         </section>
 
         <section class="dashboard-panel" id="panel-history" data-panel="history" hidden>
@@ -80,6 +85,7 @@
 
     <script src="match.js"></script>
     <script src="team-panels.js"></script>
+    <script src="scoresheet.js"></script>
     <script src="dashboard.js"></script>
     <script src="teams.js"></script>
     <script src="score.js"></script>

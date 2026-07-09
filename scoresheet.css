@@ -1,0 +1,265 @@
+/* =========================================================
+   Mölkky score sheet — shared dashboard + overlay styles
+   ========================================================= */
+
+.scoresheet[hidden] {
+  display: none;
+}
+
+.scoresheet__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.scoresheet__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.scoresheet__title {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scoresheet__range {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+}
+
+.scoresheet__scroll {
+  overflow-x: auto;
+}
+
+.scoresheet__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  table-layout: fixed;
+}
+
+.scoresheet__table th,
+.scoresheet__table td {
+  padding: 0.35rem 0.4rem;
+  text-align: center;
+  border: 1px solid var(--birch-300);
+}
+
+.scoresheet__corner,
+.scoresheet__team {
+  text-align: left;
+  width: 8.5rem;
+}
+
+.scoresheet__round,
+.scoresheet__total-head {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  width: 2.1rem;
+}
+
+.scoresheet__team-name {
+  display: block;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.scoresheet__team-players {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 500;
+  opacity: 0.75;
+  word-break: break-word;
+}
+
+.scoresheet__cell {
+  font-variant-numeric: tabular-nums;
+}
+
+.scoresheet__cell--latest {
+  font-weight: 700;
+}
+
+.scoresheet__total {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.scoresheet__row--out {
+  opacity: 0.55;
+}
+
+/* ---------- Dashboard (index.html) — birch card look ---------- */
+
+.score-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.score-layout__main {
+  min-width: 0;
+}
+
+.score-layout__side {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.score-layout__side[hidden] {
+  display: none;
+}
+
+.score-layout__side .scoresheet {
+  background: var(--birch-100);
+  border: 1px solid var(--birch-300);
+  border-radius: 10px;
+  padding: 1rem 1.1rem 1.15rem;
+  color: var(--pine-900);
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 700;
+  margin: 20px;
+}
+
+.score-layout__side .scoresheet__title {
+  color: var(--pine-800);
+}
+
+.score-layout__side .scoresheet__corner,
+.score-layout__side .scoresheet__round,
+.score-layout__side .scoresheet__total-head {
+  background: var(--pine-800);
+  color: var(--birch-100);
+  border-color: var(--pine-800);
+}
+
+.score-layout__side .scoresheet__cell,
+.score-layout__side .scoresheet__team,
+.score-layout__side .scoresheet__total {
+  background: #fffdf7;
+}
+
+.score-layout__side .scoresheet__cell--latest {
+  background: var(--birch-200);
+}
+
+.score-layout__side .scoresheet__total {
+  color: var(--pin-red);
+}
+
+.score-layout__side .scoresheet__row--winner .scoresheet__team-name {
+  color: var(--gold-dark);
+}
+
+.score-layout__side .scoresheet__row--winner .scoresheet__total {
+  background: var(--gold);
+  color: var(--pine-950);
+}
+
+.score-layout__side .scoresheet__row--active .scoresheet__team {
+  box-shadow: inset 3px 0 0 var(--pin-red);
+}
+
+@media (max-width: 900px) {
+  .score-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .score-layout__side {
+    position: static;
+  }
+}
+
+/* ---------- Overlay (overlay.html) — dark pine + gold ---------- */
+
+.overlay-scoresheet {
+  position: fixed;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 10;
+  max-width: min(46vw, 420px);
+}
+
+.overlay-scoresheet .scoresheet {
+  background-color: var(--pine-900);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius-card);
+  padding: 0.55rem 0.65rem 0.6rem;
+  color: var(--birch-100);
+}
+
+.overlay-scoresheet .scoresheet__title {
+  color: var(--birch-100);
+}
+
+.overlay-scoresheet .scoresheet__table {
+  font-size: 0.7rem;
+}
+
+.overlay-scoresheet .scoresheet__table th,
+.overlay-scoresheet .scoresheet__table td {
+  padding: 0.22rem 0.3rem;
+  border-color: rgba(195, 146, 47, 0.35);
+}
+
+.overlay-scoresheet .scoresheet__corner,
+.overlay-scoresheet .scoresheet__team {
+  width: 6.5rem;
+}
+
+.overlay-scoresheet .scoresheet__corner,
+.overlay-scoresheet .scoresheet__round,
+.overlay-scoresheet .scoresheet__total-head {
+  color: var(--gold);
+  font-size: 0.64rem;
+}
+
+.overlay-scoresheet .scoresheet__team-name {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--birch-100);
+}
+
+.overlay-scoresheet .scoresheet__team-players {
+  color: var(--gold);
+  opacity: 0.9;
+}
+
+.overlay-scoresheet .scoresheet__cell {
+  color: var(--birch-100);
+}
+
+.overlay-scoresheet .scoresheet__cell--latest {
+  color: var(--gold);
+  background: rgba(195, 146, 47, 0.14);
+}
+
+.overlay-scoresheet .scoresheet__total {
+  color: var(--gold);
+  font-size: 0.78rem;
+}
+
+.overlay-scoresheet .scoresheet__row--winner .scoresheet__team-name,
+.overlay-scoresheet .scoresheet__row--winner .scoresheet__total {
+  color: var(--gold);
+}
+
+.overlay-scoresheet .scoresheet__row--out {
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .score-layout__side {
+    position: static;
+  }
+}
