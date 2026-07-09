@@ -1,9 +1,8 @@
 const controlCards = document.getElementById('control-cards');
+const scoreActionbar = document.getElementById('score-actionbar');
 const scoreEmpty = document.getElementById('score-empty');
 const scorePreview = document.getElementById('score-preview');
 const teamPanels = document.getElementById('team-panels');
-const scoresheetSide = document.getElementById('scoresheet-side');
-const scoresheet = document.getElementById('scoresheet');
 const resetMatchBtn = document.getElementById('reset-match-btn');
 
 resetMatchBtn.addEventListener('click', () => {
@@ -18,19 +17,18 @@ function render() {
 
   if (!match) {
     controlCards.innerHTML = '';
+    scoreActionbar.innerHTML = '';
+    scoreActionbar.hidden = true;
     scoreEmpty.hidden = false;
     scorePreview.hidden = true;
-    scoresheetSide.hidden = true;
-    renderScoreSheet(scoresheet, null);
     return;
   }
 
   scoreEmpty.hidden = true;
   scorePreview.hidden = false;
-  scoresheetSide.hidden = false;
   renderTeamPanels(teamPanels, match);
-  renderScoreSheet(scoresheet, match);
   renderControls(match);
+  renderActionbar(match);
 }
 
 function renderControls(match) {
@@ -44,51 +42,73 @@ function renderControls(match) {
     card.className = `control-card${isTurn ? ' control-card--active' : ''}${team.eliminated ? ' control-card--out' : ''}`;
 
     const currentPlayer = isTurn ? MolkkyMatch.getCurrentPlayer(team) : null;
-    const playerLabel = currentPlayer
-      ? `今の選手: ${escapeHtml(currentPlayer.name)}`
-      : team.players.length
-        ? team.players.map((p) => escapeHtml(p.name)).join('、')
-        : '選手未登録';
-
-    const pointButtons = Array.from(
-      { length: MolkkyMatch.MAX_POINTS - MolkkyMatch.MIN_POINTS + 1 },
-      (_, i) => {
-        const points = i + MolkkyMatch.MIN_POINTS;
-        return `<button type="button" class="point-btn" data-points="${points}" ${isTurn ? '' : 'disabled'}>${points}</button>`;
-      },
-    ).join('');
+    const currentBlock = isTurn
+      ? `<div class="control-card__current">
+           <span class="control-card__current-label">今の選手</span>
+           <span class="control-card__current-name">${currentPlayer ? escapeHtml(currentPlayer.name) : '選手未登録'}</span>
+         </div>`
+      : `<p class="control-card__players">${
+          team.players.length ? team.players.map((p) => escapeHtml(p.name)).join('、') : '選手未登録'
+        }</p>`;
 
     card.innerHTML = `
       <div class="control-card__header">
         <strong>${escapeHtml(team.name)}</strong>
         <span class="control-card__score">${team.score} / ${MolkkyMatch.WIN_SCORE}</span>
       </div>
-      <p class="control-card__players">${playerLabel}</p>
+      ${currentBlock}
       <p class="control-card__misses">連続ミス ${team.consecutiveMisses} / ${MolkkyMatch.MAX_CONSECUTIVE_MISSES}${team.eliminated ? ' — 失格' : ''}</p>
-      ${isTurn ? '<p class="control-card__turn">このチームの番です</p>' : ''}
-      <div class="point-grid">${pointButtons}</div>
-      <div class="control-card__actions">
-        <button type="button" class="secondary miss-btn" data-action="miss" ${isTurn ? '' : 'disabled'}>ミス (0)</button>
-        <button type="button" class="secondary" data-action="undo">元に戻す</button>
-      </div>
+      ${team.winner ? '<p class="control-card__turn">勝者！</p>' : isTurn ? '<p class="control-card__turn">このチームの番です</p>' : ''}
     `;
-
-    if (matchOver || team.eliminated) {
-      card.querySelectorAll('.point-btn').forEach((btn) => {
-        btn.disabled = true;
-      });
-      const missBtn = card.querySelector('[data-action="miss"]');
-      if (missBtn) missBtn.disabled = true;
-    }
-
-    card.querySelectorAll('.point-btn').forEach((btn) => {
-      btn.addEventListener('click', () => MolkkyMatch.addPoints(team.id, Number(btn.dataset.points)));
-    });
-    card.querySelector('[data-action="miss"]')?.addEventListener('click', () => MolkkyMatch.recordMiss(team.id));
-    card.querySelector('[data-action="undo"]').addEventListener('click', () => MolkkyMatch.undo(team.id));
 
     controlCards.appendChild(card);
   });
+}
+
+function renderActionbar(match) {
+  scoreActionbar.hidden = false;
+  const matchOver = MolkkyMatch.hasWinner();
+  const currentTeam = MolkkyMatch.getCurrentTeam();
+  const currentPlayer = currentTeam ? MolkkyMatch.getCurrentPlayer(currentTeam) : null;
+  const canScore = Boolean(currentTeam) && !matchOver;
+  const winner = match.teams.find((t) => t.winner);
+
+  const info = matchOver
+    ? `<div class="score-actionbar__info score-actionbar__info--over">
+         <span class="score-actionbar__team">試合終了</span>
+         ${winner ? `<span class="score-actionbar__player">勝者: ${escapeHtml(winner.name)}</span>` : ''}
+       </div>`
+    : `<div class="score-actionbar__info">
+         <span class="score-actionbar__team">${currentTeam ? escapeHtml(currentTeam.name) : ''} の番</span>
+         <span class="score-actionbar__player">${currentPlayer ? escapeHtml(currentPlayer.name) : '選手未登録'}</span>
+       </div>`;
+
+  const pointButtons = Array.from(
+    { length: MolkkyMatch.MAX_POINTS - MolkkyMatch.MIN_POINTS + 1 },
+    (_, i) => {
+      const points = i + MolkkyMatch.MIN_POINTS;
+      return `<button type="button" class="point-btn" data-points="${points}" ${canScore ? '' : 'disabled'}>${points}</button>`;
+    },
+  ).join('');
+
+  scoreActionbar.innerHTML = `
+    ${info}
+    <div class="point-grid">${pointButtons}</div>
+    <div class="score-actionbar__actions">
+      <button type="button" class="secondary miss-btn" data-action="miss" ${canScore ? '' : 'disabled'}>ミス (0)</button>
+      <button type="button" class="secondary undo-btn" data-action="undo">元に戻す</button>
+    </div>
+  `;
+
+  scoreActionbar.querySelectorAll('.point-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (currentTeam) MolkkyMatch.addPoints(currentTeam.id, Number(btn.dataset.points));
+    });
+  });
+  scoreActionbar.querySelector('[data-action="miss"]')?.addEventListener('click', () => {
+    if (currentTeam) MolkkyMatch.recordMiss(currentTeam.id);
+  });
+  scoreActionbar.querySelector('[data-action="undo"]')?.addEventListener('click', () => MolkkyMatch.undoLast());
 }
 
 function escapeHtml(text) {

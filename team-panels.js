@@ -34,7 +34,7 @@ function renderTeamPanels(container, match, emptyMessage) {
     panel.className = `team-panel${team.winner ? ' team-panel--winner' : ''}${team.eliminated ? ' team-panel--out' : ''}${isActive ? ' team-panel--active' : ''}`;
     panel.innerHTML = `
       <div class="team-panel__name">${escapeHtml(team.name)}</div>
-      ${isActive ? `<div class="team-panel__player">${playerName}</div>` : ''}
+      ${isActive ? `<div class="team-panel__player"><span class="team-panel__player-label">今の選手</span>${playerName}</div>` : ''}
       <div class="team-panel__score">${team.score}</div>
       ${team.eliminated ? '<div class="team-panel__badge team-panel__badge--out">OUT</div>' : `<div class="team-panel__badge" ${team.winner ? '' : 'hidden'}>WIN!</div>`}
       ${!team.eliminated && !team.winner ? `<div class="team-panel__misses">ミス ${team.consecutiveMisses}/${MolkkyMatch.MAX_CONSECUTIVE_MISSES}</div>` : ''}

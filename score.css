@@ -55,7 +55,7 @@
 .control-cards {
   max-width: 1000px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -118,30 +118,122 @@
   color: var(--muted-600);
 }
 
+/* Emphasised current player inside a team card */
+.control-card__current {
+  margin: 0 0 0.6rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  background: rgba(195, 60, 46, 0.1);
+  border: 1px solid rgba(195, 60, 46, 0.25);
+}
+
+.control-card__current-label {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pin-red-dark);
+}
+
+.control-card__current-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: var(--pin-red);
+  word-break: break-word;
+}
+
+/* ---------- Shared bottom action bar ---------- */
+
+.score-actionbar {
+  max-width: 1000px;
+  margin-top: 1.25rem;
+  position: sticky;
+  bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem 1.15rem;
+  background: var(--birch-100);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius-card);
+  box-shadow: 0 12px 28px -10px rgba(23, 42, 31, 0.55);
+}
+
+.score-actionbar[hidden] {
+  display: none;
+}
+
+.score-actionbar__info {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.score-actionbar__team {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--pine-900);
+}
+
+.score-actionbar__player {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--pin-red);
+  word-break: break-word;
+}
+
+.score-actionbar__info--over .score-actionbar__player {
+  color: var(--gold-dark);
+}
+
 .point-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 0.4rem;
-  margin-bottom: 0.75rem;
-}
-
-.point-btn {
-  padding: 0.5rem 0;
-  font-size: 0.85rem;
-}
-
-.control-card__actions {
-  display: flex;
-  justify-content: space-between;
+  grid-template-columns: repeat(12, 1fr);
   gap: 0.5rem;
 }
 
-.control-card__actions .miss-btn {
+.point-btn {
+  padding: 0.85rem 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+
+.score-actionbar__actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.score-actionbar__actions .miss-btn {
+  flex: 2;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.score-actionbar__actions .undo-btn {
   flex: 1;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 900px) {
+  .control-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .point-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 @media (max-width: 560px) {
-  .point-grid {
-    grid-template-columns: repeat(4, 1fr);
+  .control-cards {
+    grid-template-columns: 1fr;
   }
 }

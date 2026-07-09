@@ -65,9 +65,15 @@ function renderScoreSheet(container, match, options = {}) {
         .filter(Boolean)
         .join(' ');
 
+      const currentPlayer = isActive ? MolkkyMatch.getCurrentPlayer(team) : null;
       const playersLabel = team.players.length
         ? team.players.map((p) => escapeHtml(p.name)).join('・')
         : '';
+      const teamMeta = currentPlayer
+        ? `<span class="scoresheet__current-player">▶ ${escapeHtml(currentPlayer.name)}</span>`
+        : playersLabel
+          ? `<span class="scoresheet__team-players">${playersLabel}</span>`
+          : '';
 
       const cells = roundNumbers
         .map((r) => {
@@ -81,7 +87,7 @@ function renderScoreSheet(container, match, options = {}) {
         <tr class="${rowClass}">
           <th class="scoresheet__team" scope="row">
             <span class="scoresheet__team-name">${escapeHtml(team.name)}</span>
-            ${playersLabel ? `<span class="scoresheet__team-players">${playersLabel}</span>` : ''}
+            ${teamMeta}
           </th>
           ${cells}
           <td class="scoresheet__total">${team.score}</td>

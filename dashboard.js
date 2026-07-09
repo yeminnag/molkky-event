@@ -10,6 +10,9 @@ function renderPanel(panelName) {
   if (panelName === 'score' && window.ScorePage) {
     window.ScorePage.render();
   }
+  if (panelName === 'records' && window.RecordsPage) {
+    window.RecordsPage.render();
+  }
   if (panelName === 'history' && window.HistoryPage) {
     window.HistoryPage.render();
   }
@@ -57,12 +60,12 @@ document.querySelectorAll('[data-goto]').forEach((btn) => {
 
 window.addEventListener('hashchange', () => {
   const panelName = window.location.hash.replace('#', '');
-  if (['teams', 'score', 'history'].includes(panelName)) {
+  if (['teams', 'score', 'records', 'history'].includes(panelName)) {
     showPanel(panelName);
   }
 });
 
-const VALID_PANELS = ['teams', 'score', 'history'];
+const VALID_PANELS = ['teams', 'score', 'records', 'history'];
 const initialPanel = window.location.hash.replace('#', '') || 'teams';
 showPanel(VALID_PANELS.includes(initialPanel) ? initialPanel : 'teams');
 

@@ -77,6 +77,15 @@
   word-break: break-word;
 }
 
+.scoresheet__current-player {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--pin-red);
+  word-break: break-word;
+}
+
 .scoresheet__cell {
   font-variant-numeric: tabular-nums;
 }
@@ -97,10 +106,7 @@
 /* ---------- Dashboard (index.html) — birch card look ---------- */
 
 .score-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 1.25rem;
-  align-items: start;
+  display: block;
 }
 
 .score-layout__main {
@@ -233,6 +239,12 @@
 .overlay-scoresheet .scoresheet__team-players {
   color: var(--gold);
   opacity: 0.9;
+}
+
+.overlay-scoresheet .scoresheet__current-player {
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  color: var(--gold);
 }
 
 .overlay-scoresheet .scoresheet__cell {

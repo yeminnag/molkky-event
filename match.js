@@ -52,11 +52,16 @@ function normalizeMatchState(state) {
   let currentTurnIndex = state.currentTurnIndex ?? 0;
   if (currentTurnIndex < 0 || currentTurnIndex >= turnOrder.length) currentTurnIndex = 0;
 
+  const actionLog = Array.isArray(state.actionLog)
+    ? state.actionLog.filter((id) => teams.some((t) => t.id === id))
+    : [];
+
   return {
     teams,
     turnOrder,
     currentTurnIndex,
     playerIndices,
+    actionLog,
     startedAt: state.startedAt ?? null,
     archived: Boolean(state.archived),
   };
@@ -64,6 +69,18 @@ function normalizeMatchState(state) {
 
 function matchHasActivity(state) {
   return state.teams.some((t) => t.score > 0 || t.eliminated || t.winner);
+}
+
+// Running total after each throw, reconstructed from a team's history.
+// history holds the state BEFORE each throw, so the total after throw i is
+// history[i + 1].score and the last throw's total is team.score.
+function teamRoundTotalsFromHistory(team) {
+  const n = team.history.length;
+  if (n === 0) return [];
+  const totals = [];
+  for (let i = 1; i < n; i += 1) totals.push(team.history[i].score);
+  totals.push(team.score);
+  return totals;
 }
 
 function buildPastMatchEntry(state, status) {
@@ -79,6 +96,8 @@ function buildPastMatchEntry(state, status) {
       score: t.score,
       winner: t.winner,
       eliminated: t.eliminated,
+      players: (t.players || []).map((p) => ({ name: p.name })),
+      totals: teamRoundTotalsFromHistory(t),
     })),
   };
 }
@@ -191,6 +210,7 @@ const MolkkyMatch = {
     if (!team || team.eliminated || hasWinner() || !currentTeam || currentTeam.id !== teamId) return;
 
     pushTeamHistory(team);
+    match.actionLog.push(team.id);
     team.consecutiveMisses = 0;
     const newScore = team.score + points;
 
@@ -215,6 +235,7 @@ const MolkkyMatch = {
     if (!team || team.eliminated || hasWinner() || !currentTeam || currentTeam.id !== teamId) return;
 
     pushTeamHistory(team);
+    match.actionLog.push(team.id);
     team.consecutiveMisses += 1;
 
     if (team.consecutiveMisses >= MAX_CONSECUTIVE_MISSES) {
@@ -250,6 +271,28 @@ const MolkkyMatch = {
     notify();
   },
 
+  // Undo the most recent throw made by any team (used by the shared control bar).
+  undoLast() {
+    if (!match || !match.actionLog || !match.actionLog.length) return;
+
+    const teamId = match.actionLog.pop();
+    const team = match.teams.find((t) => t.id === teamId);
+    if (!team || !team.history.length) {
+      notify();
+      return;
+    }
+
+    const prev = team.history.pop();
+    team.score = prev.score;
+    team.consecutiveMisses = prev.consecutiveMisses ?? 0;
+    team.eliminated = prev.eliminated ?? false;
+    match.currentTurnIndex = prev.turnIndex ?? match.currentTurnIndex;
+    if (prev.playerIndices) match.playerIndices = { ...prev.playerIndices };
+    team.winner = false;
+    if (!hasWinner()) match.archived = false;
+    notify();
+  },
+
   resetMatch() {
     if (!match) return false;
     match.teams.forEach((t) => {
@@ -263,6 +306,7 @@ const MolkkyMatch = {
     match.teams.forEach((t) => {
       match.playerIndices[t.id] = 0;
     });
+    match.actionLog = [];
     match.archived = false;
     notify();
     return true;

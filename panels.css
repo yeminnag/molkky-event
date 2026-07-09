@@ -46,12 +46,22 @@
 }
 
 .team-panel__player {
-  font-size: 0.58rem;
-  line-height: 1.2;
-  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.15;
+  font-weight: 700;
   color: var(--gold);
   text-align: center;
   word-break: break-word;
+}
+
+.team-panel__player-label {
+  display: block;
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--birch-200);
+  margin-bottom: 0.1rem;
 }
 
 .team-panel__score {

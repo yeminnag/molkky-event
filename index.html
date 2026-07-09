@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="overlay.css">
     <link rel="stylesheet" href="score.css">
     <link rel="stylesheet" href="scoresheet.css">
+    <link rel="stylesheet" href="records.css">
     <link rel="stylesheet" href="history.css">
     <title>Mölkky Dashboard</title>
 </head>
@@ -24,6 +25,7 @@
         <nav class="dashboard-nav">
             <button type="button" class="dashboard-tab is-active" data-panel="teams">チーム管理</button>
             <button type="button" class="dashboard-tab" data-panel="score">スコア管理</button>
+            <button type="button" class="dashboard-tab" data-panel="records">スコア記録</button>
             <button type="button" class="dashboard-tab" data-panel="history">過去の試合</button>
             <a class="dashboard-tab dashboard-tab--link" href="overlay.html" target="_blank" rel="noopener">配信オーバーレイ ↗</a>
         </nav>
@@ -64,12 +66,14 @@
                         <button type="button" class="secondary" data-goto="teams">チーム管理へ</button>
                     </div>
                     <div class="control-cards" id="control-cards"></div>
+                    <div class="score-actionbar" id="score-actionbar" hidden></div>
                 </div>
-
-                <aside class="score-layout__side" id="scoresheet-side" hidden>
-                    <div class="scoresheet" id="scoresheet"></div>
-                </aside>
             </div>
+        </section>
+
+        <section class="dashboard-panel" id="panel-records" data-panel="records" hidden>
+            <p class="records-empty" id="records-empty">記録された試合はまだありません。</p>
+            <div class="records-list" id="records-list"></div>
         </section>
 
         <section class="dashboard-panel" id="panel-history" data-panel="history" hidden>
@@ -89,6 +93,7 @@
     <script src="dashboard.js"></script>
     <script src="teams.js"></script>
     <script src="score.js"></script>
+    <script src="records.js"></script>
     <script src="history.js"></script>
 </body>
 </html>

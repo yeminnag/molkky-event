@@ -279,24 +279,24 @@ button.toggle.selected {
 }
 
 .teams-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
-  justify-content: flex-start;
+  align-items: start;
   min-height: 1px;
 }
 
 .teams-grid__empty {
   margin: 0;
   width: 100%;
+  grid-column: 1 / -1;
   padding: 1rem 0;
   font-size: 0.9rem;
   color: var(--muted-600);
 }
 
 .team-card {
-  width: 220px;
-  flex-shrink: 0;
+  width: 100%;
   background: #fffdf7;
   border: 2px solid var(--birch-300);
   border-radius: 10px;
@@ -331,6 +331,40 @@ button.toggle.selected {
   font-size: 1.1rem;
   line-height: 1;
   flex-shrink: 0;
+}
+
+.team-card__toggle {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1;
+  background: transparent;
+  color: var(--pine-800);
+  border: 1px solid var(--birch-300);
+}
+
+.team-card__toggle:hover {
+  background: var(--birch-200);
+  border-color: var(--birch-300);
+}
+
+.team-card--collapsed {
+  padding-bottom: 1rem;
+}
+
+.team-card--collapsed .team-card__players,
+.team-card--collapsed .team-card__add-player {
+  display: none;
+}
+
+.team-card--collapsed .team-card__header {
+  margin-bottom: 0;
 }
 
 .team-card__header strong {
@@ -502,6 +536,12 @@ button.toggle.selected {
 
 /* ---------- Responsive ---------- */
 
+@media (max-width: 960px) {
+  .teams-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 560px) {
   header {
     padding: 2rem 1rem 1.75rem;
@@ -523,6 +563,10 @@ button.toggle.selected {
 
   .row button {
     width: 100%;
+  }
+
+  .teams-grid {
+    grid-template-columns: 1fr;
   }
 
   .team-card__add-player {

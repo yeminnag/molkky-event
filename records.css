@@ -1,0 +1,164 @@
+/* =========================================================
+   Score records tab (スコア記録)
+   One category card per game, each with a round-by-round
+   score table. Reuses the shared .scoresheet__* table base.
+   ========================================================= */
+
+.records-empty {
+  max-width: 520px;
+  padding: 2rem 1.5rem;
+  background: rgba(244, 236, 216, 0.08);
+  border: 1px dashed rgba(244, 236, 216, 0.25);
+  border-radius: var(--radius-card);
+  color: var(--birch-200);
+  text-align: center;
+  line-height: 1.7;
+}
+
+.records-empty[hidden] {
+  display: none;
+}
+
+.records-list {
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.record-card {
+  background: var(--birch-100);
+  border: 1px solid var(--birch-300);
+  border-radius: var(--radius-card);
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.record-card--live {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(195, 146, 47, 0.25);
+}
+
+.record-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.record-card__toggle {
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1;
+  background: transparent;
+  color: var(--pine-800);
+  border: 1px solid var(--birch-300);
+}
+
+.record-card__toggle:hover {
+  background: var(--birch-200);
+  border-color: var(--birch-300);
+}
+
+.record-card__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.record-card--collapsed .record-card__body {
+  display: none;
+}
+
+.record-card--collapsed .record-card__header {
+  margin-bottom: 0;
+}
+
+.record-card__title {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  color: var(--pine-900);
+}
+
+.record-card__status {
+  display: inline-block;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.record-card__status--finished {
+  color: var(--ok-green);
+  background: rgba(61, 107, 63, 0.12);
+}
+
+.record-card__status--abandoned {
+  color: var(--muted-600);
+  background: rgba(117, 110, 92, 0.12);
+}
+
+.record-card__status--live {
+  color: var(--pine-950);
+  background: var(--gold);
+}
+
+.record-card__date {
+  font-size: 0.82rem;
+  color: var(--muted-600);
+  white-space: nowrap;
+}
+
+.record-card__winner {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+}
+
+/* ---------- Score table (birch card look, pine headers) ---------- */
+
+.records-sheet {
+  color: var(--pine-900);
+}
+
+.records-sheet .scoresheet__corner,
+.records-sheet .scoresheet__round,
+.records-sheet .scoresheet__total-head {
+  background: var(--pine-800);
+  color: var(--birch-100);
+  border-color: var(--pine-800);
+}
+
+.records-sheet .scoresheet__cell,
+.records-sheet .scoresheet__team,
+.records-sheet .scoresheet__total {
+  background: #fffdf7;
+}
+
+.records-sheet .scoresheet__cell--latest {
+  background: var(--birch-200);
+  font-weight: 700;
+}
+
+.records-sheet .scoresheet__total {
+  color: var(--pin-red);
+}
+
+.records-sheet .scoresheet__row--winner .scoresheet__team-name {
+  color: var(--gold-dark);
+}
+
+.records-sheet .scoresheet__row--winner .scoresheet__total {
+  background: var(--gold);
+  color: var(--pine-950);
+}

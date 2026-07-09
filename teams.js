@@ -37,7 +37,7 @@ function addTeam() {
     return;
   }
 
-  teams.push({ id: nextTeamId++, name, players: [] });
+  teams.push({ id: nextTeamId++, name, players: [], collapsed: false });
   teamNameInput.value = '';
   refreshTeamsView();
 }
@@ -59,6 +59,13 @@ function deleteTeam(teamId) {
   if (teams.length === 0) {
     MolkkyMatch.endActiveMatch();
   }
+  refreshTeamsView();
+}
+
+function toggleCollapse(teamId) {
+  const team = teams.find((t) => t.id === teamId);
+  if (!team) return;
+  team.collapsed = !team.collapsed;
   refreshTeamsView();
 }
 
@@ -119,6 +126,7 @@ function renderTeams() {
   teamsGrid.innerHTML = teams
     .map((team) => {
       const selected = selectedTeamIds.has(team.id);
+      const collapsed = Boolean(team.collapsed);
       const players = Array.isArray(team.players) ? team.players : [];
       const count = players.length;
       const full = count >= MAX_PLAYERS;
@@ -136,13 +144,14 @@ function renderTeams() {
 
       return `
         <article
-          class="team-card${selected ? ' selected' : ''}"
+          class="team-card${selected ? ' selected' : ''}${collapsed ? ' team-card--collapsed' : ''}"
           data-team-id="${team.id}"
           role="button"
           tabindex="0"
           aria-pressed="${selected}"
         >
           <div class="team-card__header">
+            <button type="button" class="team-card__toggle" data-action="toggle-collapse" aria-expanded="${!collapsed}" aria-label="${collapsed ? '展開' : '折りたたむ'}">${collapsed ? '▸' : '▾'}</button>
             <strong>${escapeHtml(team.name)}</strong>
             <span class="team-card__count" data-full="${full}">${count}/${MAX_PLAYERS}</span>
             <button type="button" class="team-card__delete" data-action="delete-team" aria-label="チームを削除">×</button>
@@ -184,6 +193,11 @@ function handleTeamsGridClick(event) {
 
   if (actionEl) {
     const action = actionEl.dataset.action;
+
+    if (action === 'toggle-collapse') {
+      toggleCollapse(teamId);
+      return;
+    }
 
     if (action === 'delete-team') {
       deleteTeam(teamId);
