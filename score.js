@@ -98,6 +98,7 @@ function renderActionbar(match) {
       <button type="button" class="secondary miss-btn" data-action="miss" ${canScore ? '' : 'disabled'}>ミス (0)</button>
       <button type="button" class="secondary undo-btn" data-action="undo">元に戻す</button>
     </div>
+    <p class="score-actionbar__hint">キー: <kbd>1</kbd>–<kbd>9</kbd> 得点 ・ <kbd>M</kbd> ミス ・ <kbd>Ctrl</kbd>+<kbd>Z</kbd> 元に戻す</p>
   `;
 
   scoreActionbar.querySelectorAll('.point-btn').forEach((btn) => {
@@ -116,5 +117,72 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+
+// Keyboard shortcuts for fast scoring at a live event:
+//   1–9 = score those points, M = miss, Ctrl/Cmd+Z = undo.
+// Only active on the score panel, and never while typing in a field.
+function handleScoreKeydown(event) {
+  const onScorePanel = !window.Dashboard || window.Dashboard.getActivePanel() === 'score';
+  if (!onScorePanel) return;
+
+  const target = event.target;
+  if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+    return;
+  }
+
+  const key = event.key;
+
+  if ((event.ctrlKey || event.metaKey) && (key === 'z' || key === 'Z')) {
+    event.preventDefault();
+    MolkkyMatch.undoLast();
+    return;
+  }
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+  const currentTeam = MolkkyMatch.getCurrentTeam();
+  if (!currentTeam || MolkkyMatch.hasWinner()) return;
+
+  if (key >= '1' && key <= '9') {
+    event.preventDefault();
+    MolkkyMatch.addPoints(currentTeam.id, Number(key));
+  } else if (key === 'm' || key === 'M') {
+    event.preventDefault();
+    MolkkyMatch.recordMiss(currentTeam.id);
+  }
+}
+
+document.addEventListener('keydown', handleScoreKeydown);
+
+// Transient inline feedback so the admin can't miss a bust or an elimination.
+let scoreToastEl = null;
+let scoreToastTimer = null;
+
+function showScoreToast(message, variant) {
+  if (!scoreToastEl) {
+    scoreToastEl = document.createElement('div');
+    scoreToastEl.className = 'score-toast';
+    scoreToastEl.setAttribute('role', 'status');
+    scoreToastEl.setAttribute('aria-live', 'assertive');
+    document.body.appendChild(scoreToastEl);
+  }
+
+  scoreToastEl.className = `score-toast score-toast--${variant} is-visible`;
+  scoreToastEl.textContent = message;
+
+  clearTimeout(scoreToastTimer);
+  scoreToastTimer = setTimeout(() => {
+    scoreToastEl.classList.remove('is-visible');
+  }, 2600);
+}
+
+MolkkyMatch.onEvent((event) => {
+  if (event.type === 'bust') {
+    showScoreToast(`${event.name} バスト！ ${event.from}+${event.points} → ${event.reset}`, 'bust');
+  } else if (event.type === 'eliminated') {
+    showScoreToast(`${event.name} 失格（3連続ミス）`, 'out');
+  } else if (event.type === 'win') {
+    showScoreToast(`🏆 ${event.name} の勝利！`, 'win');
+  }
+});
 
 window.ScorePage = { render };

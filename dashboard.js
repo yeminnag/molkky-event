@@ -66,7 +66,11 @@ window.addEventListener('hashchange', () => {
 });
 
 const VALID_PANELS = ['teams', 'score', 'records', 'history'];
-const initialPanel = window.location.hash.replace('#', '') || 'teams';
+const hashPanel = window.location.hash.replace('#', '');
+// After a refresh mid-game, jump straight to the live score panel instead of
+// the (unpersisted, empty) teams panel.
+const hasLiveMatch = window.MolkkyMatch && MolkkyMatch.get() && !MolkkyMatch.get().archived;
+const initialPanel = hashPanel || (hasLiveMatch ? 'score' : 'teams');
 showPanel(VALID_PANELS.includes(initialPanel) ? initialPanel : 'teams');
 
 window.Dashboard = { showPanel, refreshPanel, getActivePanel: () => activePanel };

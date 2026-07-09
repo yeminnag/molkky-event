@@ -6,12 +6,45 @@ const MAX_CONSECUTIVE_MISSES = 3;
 const MIN_POINTS = 1;
 const MAX_POINTS = 12;
 
+const STORAGE_KEY = 'molkky-event-state';
+
 let match = null;
 let pastMatches = [];
 const listeners = new Set();
+// Game events (bust / eliminated / win / miss / score) for transient UI:
+// inline admin feedback now, and overlay drama in a later phase.
+const eventListeners = new Set();
+
+function emit(event) {
+  eventListeners.forEach((fn) => fn(event));
+}
 const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('molkky-event') : null;
 
+// Durable local persistence so a refresh/crash never loses the live match or
+// the recorded past matches. BroadcastChannel handles live cross-tab sync;
+// localStorage handles surviving a reload.
+function persist() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ match, pastMatches }));
+  } catch (e) {
+    // storage unavailable or full — degrade gracefully to in-memory only.
+  }
+}
+
+function loadPersisted() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    match = data.match ? normalizeMatchState(data.match) : null;
+    pastMatches = Array.isArray(data.pastMatches) ? data.pastMatches : [];
+  } catch (e) {
+    // corrupt or unreadable state — start fresh rather than crash.
+  }
+}
+
 function notify(fromRemote = false) {
+  persist();
   listeners.forEach((fn) => fn(match));
   if (!fromRemote && syncChannel) {
     syncChannel.postMessage({ match, pastMatches });
@@ -25,6 +58,10 @@ if (syncChannel) {
     notify(true);
   });
 }
+
+// Rehydrate before any subscriber renders. match.js runs before every other
+// script, so populating these here is enough for the initial render.
+loadPersisted();
 
 function normalizeMatchState(state) {
   if (!state || !Array.isArray(state.teams)) return null;
@@ -142,6 +179,7 @@ function checkAutoWin() {
   const active = getActiveTeams();
   if (active.length === 1) {
     active[0].winner = true;
+    emit({ type: 'win', teamId: active[0].id, name: active[0].name });
   }
 }
 
@@ -200,6 +238,11 @@ const MolkkyMatch = {
     return () => listeners.delete(fn);
   },
 
+  onEvent(fn) {
+    eventListeners.add(fn);
+    return () => eventListeners.delete(fn);
+  },
+
   hasWinner,
   getCurrentTeam,
   getCurrentPlayer,
@@ -212,15 +255,19 @@ const MolkkyMatch = {
     pushTeamHistory(team);
     match.actionLog.push(team.id);
     team.consecutiveMisses = 0;
-    const newScore = team.score + points;
+    const previousScore = team.score;
+    const newScore = previousScore + points;
 
     if (newScore === WIN_SCORE) {
       team.score = WIN_SCORE;
       team.winner = true;
+      emit({ type: 'win', teamId: team.id, name: team.name });
     } else if (newScore > WIN_SCORE) {
       team.score = BUST_RESET_SCORE;
+      emit({ type: 'bust', teamId: team.id, name: team.name, from: previousScore, points, reset: BUST_RESET_SCORE });
     } else {
       team.score = newScore;
+      emit({ type: 'score', teamId: team.id, name: team.name, points, total: newScore });
     }
 
     if (!team.winner) advanceTurn();
@@ -240,6 +287,9 @@ const MolkkyMatch = {
 
     if (team.consecutiveMisses >= MAX_CONSECUTIVE_MISSES) {
       team.eliminated = true;
+      emit({ type: 'eliminated', teamId: team.id, name: team.name });
+    } else {
+      emit({ type: 'miss', teamId: team.id, name: team.name, misses: team.consecutiveMisses });
     }
 
     if (!team.winner) {
