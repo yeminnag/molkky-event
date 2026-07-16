@@ -31,3 +31,91 @@ body.overlay-body {
     padding: 0.5rem;
   }
 }
+
+/* =========================================================
+   Broadcast reveal — compact at rest, full for a few seconds
+   after each throw (driven by reveal.js toggling .is-revealed
+   on <body>).
+
+   Every rule is scoped to .overlay-body on purpose: index.html
+   loads this stylesheet too, and its score preview must keep
+   showing the panels in full at all times.
+   ========================================================= */
+
+/* ---------- Scoresheet: rolls away below the bottom edge ---------- */
+
+.overlay-body .overlay-scoresheet {
+  transform: translateY(calc(100% + 1rem));
+  opacity: 0;
+  /* leaving: slower and softer, so it doesn't pull the eye */
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.35s ease;
+  will-change: transform, opacity;
+}
+
+.overlay-body.is-revealed .overlay-scoresheet {
+  transform: translateY(0);
+  opacity: 1;
+  /* arriving: quicker, with a little overshoot to draw attention */
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+}
+
+/* ---------- Team panels: full card <-> compact scorebug ---------- */
+
+.overlay-body .team-panel {
+  transition:
+    width 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    min-width 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overlay-body:not(.is-revealed) .team-panel {
+  width: 108px;
+  min-width: 108px;
+  max-width: 108px;
+  padding: 0.4rem 0.45rem;
+}
+
+/* The current player and the miss counter are the detail that makes the panel
+   tall; collapse them by height rather than display:none so the card morphs. */
+.overlay-body .team-panel__player,
+.overlay-body .team-panel__misses {
+  max-height: 3rem;
+  opacity: 1;
+  overflow: hidden;
+  transition:
+    max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.28s ease,
+    margin-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overlay-body:not(.is-revealed) .team-panel__player,
+.overlay-body:not(.is-revealed) .team-panel__misses {
+  max-height: 0;
+  opacity: 0;
+  /* swallow the flex gap the collapsed row would otherwise leave behind */
+  margin-top: -0.2rem;
+}
+
+/* The score is the one thing that must stay legible in the compact state. */
+.overlay-body .team-panel__score {
+  transition: font-size 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overlay-body:not(.is-revealed) .team-panel__score {
+  font-size: 1.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay-body .overlay-scoresheet,
+  .overlay-body .team-panel,
+  .overlay-body .team-panel__player,
+  .overlay-body .team-panel__misses,
+  .overlay-body .team-panel__score {
+    transition: none;
+  }
+}

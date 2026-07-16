@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="overlay.css">
+    <link rel="stylesheet" href="celebration.css">
+    <title>Mölkky Overlay — 勝利エフェクト</title>
+</head>
+<body class="overlay-body">
+    <div class="win-fx" id="win-fx" role="status" aria-live="polite">
+        <div class="win-fx__flash"></div>
+        <div class="win-fx__rays"></div>
+        <div class="win-fx__ring"></div>
+        <div class="win-fx__ring win-fx__ring--two"></div>
+        <div class="win-fx__ring win-fx__ring--three"></div>
+        <div class="win-fx__confetti" id="win-fx-confetti"></div>
+        <div class="win-fx__card">
+            <div class="win-fx__label">WINNER</div>
+            <div class="win-fx__team" id="win-fx-team"></div>
+            <div class="win-fx__score" id="win-fx-score"></div>
+        </div>
+    </div>
+
+    <script src="match.js"></script>
+    <script src="celebration.js"></script>
+</body>
+</html>

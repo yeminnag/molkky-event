@@ -184,14 +184,18 @@
   }
 }
 
-/* ---------- Overlay (overlay.html) — dark pine + gold ---------- */
+/* ---------- Overlay (overlay-sheet.html) — dark pine + gold ---------- */
 
+/* Anchored to the bottom of its own OBS source: reveal.js rolls it out by
+   translateY(100%+), which clears the canvas from here no matter how the source
+   is sized. The cap is a flat px value, not a vw share — this page IS the sheet
+   now, so a snugly-sized source must not squeeze the table. */
 .overlay-scoresheet {
   position: fixed;
   right: 0.75rem;
   bottom: 0.75rem;
   z-index: 10;
-  max-width: min(46vw, 420px);
+  max-width: 420px;
 }
 
 .overlay-scoresheet .scoresheet {

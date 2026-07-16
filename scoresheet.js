@@ -6,6 +6,16 @@
 
 const SCORESHEET_WINDOW = 6;
 
+// Also declared in team-panels.js. Kept here so this renderer stands alone on
+// overlay-sheet.html, which does not load the panel renderer. Redeclaring a
+// function across classic scripts is harmless — the pages that load both get
+// one identical implementation.
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 // Running total after each throw for a team.
 // history holds the state BEFORE each throw, so the total after
 // throw i is history[i + 1].score, and the last throw is team.score.

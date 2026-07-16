@@ -40,6 +40,7 @@ function renderControls(match) {
     const isTurn = currentTeam && team.id === currentTeam.id && !matchOver && !team.eliminated;
     const card = document.createElement('article');
     card.className = `control-card${isTurn ? ' control-card--active' : ''}${team.eliminated ? ' control-card--out' : ''}`;
+    card.dataset.teamId = team.id;
 
     const currentPlayer = isTurn ? MolkkyMatch.getCurrentPlayer(team) : null;
     const currentBlock = isTurn
@@ -47,9 +48,7 @@ function renderControls(match) {
            <span class="control-card__current-label">今の選手</span>
            <span class="control-card__current-name">${currentPlayer ? escapeHtml(currentPlayer.name) : '選手未登録'}</span>
          </div>`
-      : `<p class="control-card__players">${
-          team.players.length ? team.players.map((p) => escapeHtml(p.name)).join('、') : '選手未登録'
-        }</p>`;
+      : '';
 
     card.innerHTML = `
       <div class="control-card__header">
@@ -57,6 +56,7 @@ function renderControls(match) {
         <span class="control-card__score">${team.score} / ${MolkkyMatch.WIN_SCORE}</span>
       </div>
       ${currentBlock}
+      ${renderPlayerOrder(team, isTurn, matchOver)}
       <p class="control-card__misses">連続ミス ${team.consecutiveMisses} / ${MolkkyMatch.MAX_CONSECUTIVE_MISSES}${team.eliminated ? ' — 失格' : ''}</p>
       ${team.winner ? '<p class="control-card__turn">勝者！</p>' : isTurn ? '<p class="control-card__turn">このチームの番です</p>' : ''}
     `;
@@ -64,6 +64,57 @@ function renderControls(match) {
     controlCards.appendChild(card);
   });
 }
+
+// The team's throwing rotation, reorderable mid-match with ▲▼.
+// The marker sits on the slot that throws next, not on a particular person, so
+// it stays put while the names move — nudge the marked player down and they are
+// skipped to the following slot.
+function renderPlayerOrder(team, isTurn, matchOver) {
+  if (!team.players.length) {
+    return '<p class="control-card__players">選手未登録</p>';
+  }
+
+  const pointer = MolkkyMatch.getPlayerIndex(team.id);
+  const showPointer = !team.eliminated && !matchOver;
+  const last = team.players.length - 1;
+
+  const rows = team.players
+    .map((player, index) => {
+      const marked = showPointer && index === pointer;
+      const name = escapeHtml(player.name);
+      return `
+        <li class="player-order__row${marked ? ' player-order__row--now' : ''}">
+          <span class="player-order__pos">${index + 1}</span>
+          <span class="player-order__name">${name}</span>
+          ${marked ? `<span class="player-order__mark">${isTurn ? '今' : '次'}</span>` : ''}
+          <span class="player-order__moves">
+            <button type="button" class="player-order__move" data-action="move-player" data-index="${index}" data-dir="-1" ${index === 0 ? 'disabled' : ''} aria-label="${name} を上へ">▲</button>
+            <button type="button" class="player-order__move" data-action="move-player" data-index="${index}" data-dir="1" ${index === last ? 'disabled' : ''} aria-label="${name} を下へ">▼</button>
+          </span>
+        </li>
+      `;
+    })
+    .join('');
+
+  return `
+    <div class="player-order">
+      <span class="player-order__label">投げる順番</span>
+      <ul class="player-order__list">${rows}</ul>
+    </div>
+  `;
+}
+
+// Delegated once, since renderControls rebuilds the cards on every update.
+controlCards.addEventListener('click', (event) => {
+  const btn = event.target.closest('[data-action="move-player"]');
+  if (!btn) return;
+
+  const card = btn.closest('.control-card');
+  if (!card) return;
+
+  const from = Number(btn.dataset.index);
+  MolkkyMatch.movePlayer(Number(card.dataset.teamId), from, from + Number(btn.dataset.dir));
+});
 
 function renderActionbar(match) {
   scoreActionbar.hidden = false;
@@ -98,7 +149,6 @@ function renderActionbar(match) {
       <button type="button" class="secondary miss-btn" data-action="miss" ${canScore ? '' : 'disabled'}>ミス (0)</button>
       <button type="button" class="secondary undo-btn" data-action="undo">元に戻す</button>
     </div>
-    <p class="score-actionbar__hint">キー: <kbd>1</kbd>–<kbd>9</kbd> 得点 ・ <kbd>M</kbd> ミス ・ <kbd>Ctrl</kbd>+<kbd>Z</kbd> 元に戻す</p>
   `;
 
   scoreActionbar.querySelectorAll('.point-btn').forEach((btn) => {

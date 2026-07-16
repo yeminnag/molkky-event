@@ -136,9 +136,102 @@
   }
 }
 
+/* =========================================================
+   "Stir up" celebrations
+   - score--stir: punchy upward lift each time points are added
+   - panel--celebrate: one-shot burst the moment a team wins
+     (runs alongside the looping winner glow above)
+   ========================================================= */
+
+.team-panel__score--stir {
+  animation: score-stir-up 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  /* keep the lifted number above neighbouring panels while it pops */
+  position: relative;
+  z-index: 3;
+  will-change: transform;
+}
+
+@keyframes score-stir-up {
+  0% {
+    transform: translateY(0) scale(1);
+    text-shadow: none;
+  }
+  35% {
+    transform: translateY(-12px) scale(1.45);
+    text-shadow: 0 0 14px rgba(195, 146, 47, 0.85), 0 0 28px rgba(195, 146, 47, 0.45);
+  }
+  60% {
+    transform: translateY(0) scale(1.06);
+    text-shadow: 0 0 6px rgba(195, 146, 47, 0.35);
+  }
+  80% {
+    transform: translateY(-4px) scale(1.12);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    text-shadow: none;
+  }
+}
+
+.team-panel--celebrate {
+  z-index: 4;
+  animation:
+    panel-winner-glow 1.4s ease-in-out infinite,
+    panel-celebrate 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, filter;
+}
+
+/* transform + filter only, so it never fights the glow's box-shadow */
+@keyframes panel-celebrate {
+  0% {
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+  22% {
+    transform: translateY(-20px) scale(1.14);
+    filter: brightness(1.45) drop-shadow(0 12px 20px rgba(195, 146, 47, 0.7));
+  }
+  48% {
+    transform: translateY(-2px) scale(1.03);
+    filter: brightness(1.15) drop-shadow(0 4px 10px rgba(195, 146, 47, 0.4));
+  }
+  68% {
+    transform: translateY(-12px) scale(1.09);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+.team-panel--celebrate .team-panel__badge {
+  animation: badge-stir-pop 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes badge-stir-pop {
+  0% {
+    transform: translateY(6px) scale(0.4);
+    opacity: 0;
+  }
+  40% {
+    transform: translateY(-6px) scale(1.35);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(0) scale(0.95);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .team-panel--active,
-  .team-panel--winner {
+  .team-panel--winner,
+  .team-panel--celebrate,
+  .team-panel__score--stir,
+  .team-panel--celebrate .team-panel__badge {
     animation: none;
   }
 }

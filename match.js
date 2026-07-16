@@ -196,6 +196,14 @@ function getCurrentTeam() {
   return null;
 }
 
+// Which slot in a team's rotation throws next. Every team carries its own
+// pointer, so this is meaningful even when it isn't the team's turn.
+function getPlayerIndex(teamId) {
+  const team = match?.teams.find((t) => t.id === teamId);
+  if (!team || !team.players.length) return -1;
+  return match.playerIndices[teamId] % team.players.length;
+}
+
 function getCurrentPlayer(team) {
   if (!team || !team.players.length) return null;
   const idx = match.playerIndices[team.id] % team.players.length;
@@ -246,6 +254,32 @@ const MolkkyMatch = {
   hasWinner,
   getCurrentTeam,
   getCurrentPlayer,
+  getPlayerIndex,
+
+  // Reorder a team's rotation mid-match, for when a player has to be skipped
+  // or taken out of sequence.
+  //
+  // playerIndices is deliberately left alone: the pointer stays on its slot and
+  // the names move underneath it. So nudging the current thrower down one slot
+  // hands the turn to the player below and puts the skipped player next — which
+  // is the whole point. Moving anyone else around never disturbs whose turn it
+  // is. The registered roster in teams.js is untouched: startNewMatch copies
+  // the players, so this only reorders the live match.
+  movePlayer(teamId, fromIndex, toIndex) {
+    const team = match?.teams.find((t) => t.id === teamId);
+    if (!team) return false;
+
+    const players = team.players;
+    const last = players.length - 1;
+    if (fromIndex < 0 || fromIndex > last) return false;
+    if (toIndex < 0 || toIndex > last) return false;
+    if (fromIndex === toIndex) return false;
+
+    const [moved] = players.splice(fromIndex, 1);
+    players.splice(toIndex, 0, moved);
+    notify();
+    return true;
+  },
 
   addPoints(teamId, points) {
     const team = match?.teams.find((t) => t.id === teamId);
