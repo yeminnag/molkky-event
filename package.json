@@ -1,0 +1,13 @@
+{
+  "name": "molkky-event",
+  "version": "1.0.0",
+  "description": "モルック大会用スコアダッシュボード（過去試合は SQLite にローカル保存）",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

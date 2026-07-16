@@ -7,6 +7,8 @@ const MIN_POINTS = 1;
 const MAX_POINTS = 12;
 
 const STORAGE_KEY = 'molkky-event-state';
+// Set once the pre-database localStorage history has been copied into SQLite.
+const DB_MIGRATED_KEY = 'molkky-event-db-migrated';
 
 let match = null;
 let pastMatches = [];
@@ -20,9 +22,11 @@ function emit(event) {
 }
 const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('molkky-event') : null;
 
-// Durable local persistence so a refresh/crash never loses the live match or
-// the recorded past matches. BroadcastChannel handles live cross-tab sync;
-// localStorage handles surviving a reload.
+// Past matches live in SQLite (server/db.js); the live match stays in
+// localStorage because it changes on every throw and must survive a reload
+// even with no server running. localStorage also keeps a mirror of the past
+// matches as an offline fallback — see hydrateFromDatabase().
+// BroadcastChannel handles live cross-tab sync.
 function persist() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ match, pastMatches }));
@@ -60,7 +64,8 @@ if (syncChannel) {
 }
 
 // Rehydrate before any subscriber renders. match.js runs before every other
-// script, so populating these here is enough for the initial render.
+// script, so populating these here is enough for the initial render. The DB
+// read then replaces the mirrored past matches and re-renders on arrival.
 loadPersisted();
 
 function normalizeMatchState(state) {
@@ -147,8 +152,73 @@ function archiveCurrentMatch(status) {
   pastMatches.unshift(entry);
   pastMatches = pastMatches.slice(0, MAX_PAST_MATCHES);
   match.archived = true;
+  // Render immediately off the in-memory copy; the DB write settles behind it.
   notify();
+  saveEntryToDatabase(entry);
   return entry;
+}
+
+// buildPastMatchEntry() stamps a Date.now() id so the UI has a key right away.
+// Once SQLite assigns the real primary key, swap it in — otherwise a later
+// delete would target an id the database has never heard of.
+async function saveEntryToDatabase(entry) {
+  const saved = await MatchDB.create(entry);
+  if (!saved) return; // Offline: the localStorage mirror is the record of truth.
+
+  const target = pastMatches.find((e) => e.id === entry.id);
+  if (!target) return; // Deleted or cleared while the request was in flight.
+
+  target.id = saved.id;
+  notify();
+}
+
+// Pull the authoritative history out of SQLite, and on first run copy across
+// whatever the localStorage-only version of the app left behind.
+async function hydrateFromDatabase() {
+  const stored = await MatchDB.list(MAX_PAST_MATCHES);
+  if (!stored) return; // Offline: keep the mirror loaded by loadPersisted().
+
+  if (!stored.length && pastMatches.length && !migrationDone()) {
+    await importLegacyMatches();
+    return;
+  }
+
+  markMigrationDone();
+  pastMatches = stored;
+  notify();
+}
+
+async function importLegacyMatches() {
+  // Oldest first, so SQLite ids ascend in the order the matches were played.
+  const legacy = [...pastMatches].reverse();
+  const imported = [];
+
+  for (const entry of legacy) {
+    const saved = await MatchDB.create(entry);
+    if (!saved) return; // Server went away mid-import; retry on the next load.
+    imported.unshift(saved);
+  }
+
+  markMigrationDone();
+  console.info(`[molkky] ${imported.length} 件の過去試合を localStorage から DB へ移行しました。`);
+  pastMatches = imported;
+  notify();
+}
+
+function migrationDone() {
+  try {
+    return localStorage.getItem(DB_MIGRATED_KEY) === '1';
+  } catch (e) {
+    return false;
+  }
+}
+
+function markMigrationDone() {
+  try {
+    localStorage.setItem(DB_MIGRATED_KEY, '1');
+  } catch (e) {
+    // Storage unavailable: the empty-DB check still guards against re-import.
+  }
 }
 
 function archiveIfFinished() {
@@ -426,12 +496,20 @@ const MolkkyMatch = {
   deletePastMatch(id) {
     pastMatches = pastMatches.filter((entry) => entry.id !== id);
     notify();
+    MatchDB.remove(id);
     return pastMatches;
   },
 
   clearPastMatches() {
     pastMatches = [];
     notify();
+    MatchDB.clear();
+  },
+
+  // True once the past matches on screen came from SQLite rather than the
+  // localStorage fallback.
+  isDatabaseConnected() {
+    return MatchDB.online;
   },
 
   endActiveMatch() {
@@ -439,3 +517,7 @@ const MolkkyMatch = {
     notify();
   },
 };
+
+// Fire-and-forget: the fetch cannot resolve until the remaining scripts have
+// run, so every subscriber is registered before this calls notify().
+hydrateFromDatabase();
