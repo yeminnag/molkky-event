@@ -16,7 +16,8 @@ const winFxConfetti = document.getElementById('win-fx-confetti');
 // Must outlast the longest keyframe animation in celebration.css (5.6s).
 const WIN_FX_DURATION = 5800;
 const WIN_FX_CONFETTI_COUNT = 80;
-const WIN_FX_COLORS = ['#c3922f', '#f4ecd8', '#e8d9b8', '#d9c399', '#c33c2e', '#3d6b3f'];
+// Warm hues only: a chroma key on green would swallow green confetti mid-fall.
+const WIN_FX_COLORS = ['#c3922f', '#f4ecd8', '#e8d9b8', '#d9c399', '#c33c2e', '#6f4f2c'];
 
 // id of the winner already celebrated, so a plain re-render (turn change,
 // scoresheet update) never replays the burst. Cleared when the winner goes

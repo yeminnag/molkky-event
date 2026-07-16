@@ -184,7 +184,7 @@
   }
 }
 
-/* ---------- Overlay (overlay-sheet.html) — dark pine + gold ---------- */
+/* ---------- Overlay (overlay-sheet.html) — beige + cocoa + gold ---------- */
 
 /* Anchored to the bottom of its own OBS source: reveal.js rolls it out by
    translateY(100%+), which clears the canvas from here no matter how the source
@@ -199,15 +199,20 @@
 }
 
 .overlay-scoresheet .scoresheet {
-  background-color: var(--pine-900);
-  border: 1.5px solid var(--gold);
+  background: linear-gradient(180deg, var(--sand-50) 0%, var(--sand-200) 100%);
+  border: 2px solid var(--gold-dark);
   border-radius: var(--radius-card);
   padding: 0.55rem 0.65rem 0.6rem;
-  color: var(--birch-100);
+  color: var(--cocoa-900);
+  box-shadow: 0 8px 20px -10px rgba(46, 32, 21, 0.6);
 }
 
 .overlay-scoresheet .scoresheet__title {
-  color: var(--birch-100);
+  color: var(--cocoa-900);
+}
+
+.overlay-scoresheet .scoresheet__range {
+  color: var(--pin-red);
 }
 
 .overlay-scoresheet .scoresheet__table {
@@ -217,7 +222,7 @@
 .overlay-scoresheet .scoresheet__table th,
 .overlay-scoresheet .scoresheet__table td {
   padding: 0.22rem 0.3rem;
-  border-color: rgba(195, 146, 47, 0.35);
+  border-color: var(--cocoa-line);
 }
 
 .overlay-scoresheet .scoresheet__corner,
@@ -228,6 +233,8 @@
 .overlay-scoresheet .scoresheet__corner,
 .overlay-scoresheet .scoresheet__round,
 .overlay-scoresheet .scoresheet__total-head {
+  background: var(--cocoa-900);
+  border-color: var(--cocoa-900);
   color: var(--gold);
   font-size: 0.64rem;
 }
@@ -237,37 +244,46 @@
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  color: var(--birch-100);
+  color: var(--cocoa-900);
 }
 
 .overlay-scoresheet .scoresheet__team-players {
-  color: var(--gold);
+  color: var(--cocoa-700);
   opacity: 0.9;
 }
 
 .overlay-scoresheet .scoresheet__current-player {
   font-family: var(--font-display);
   font-size: 0.86rem;
-  color: var(--gold);
+  color: var(--pin-red);
 }
 
 .overlay-scoresheet .scoresheet__cell {
-  color: var(--birch-100);
+  color: var(--cocoa-800);
 }
 
+/* The throw that just landed — the one cell the viewer should find instantly. */
 .overlay-scoresheet .scoresheet__cell--latest {
-  color: var(--gold);
-  background: rgba(195, 146, 47, 0.14);
+  color: var(--cocoa-900);
+  background: var(--gold);
 }
 
 .overlay-scoresheet .scoresheet__total {
-  color: var(--gold);
+  color: var(--pin-red);
   font-size: 0.78rem;
 }
 
-.overlay-scoresheet .scoresheet__row--winner .scoresheet__team-name,
+.overlay-scoresheet .scoresheet__row--winner .scoresheet__team-name {
+  color: var(--gold-dark);
+}
+
 .overlay-scoresheet .scoresheet__row--winner .scoresheet__total {
-  color: var(--gold);
+  background: var(--gold);
+  color: var(--cocoa-900);
+}
+
+.overlay-scoresheet .scoresheet__row--active .scoresheet__team {
+  box-shadow: inset 3px 0 0 var(--pin-red);
 }
 
 .overlay-scoresheet .scoresheet__row--out {

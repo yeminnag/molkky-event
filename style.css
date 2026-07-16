@@ -15,6 +15,18 @@
   --birch-200: #e8d9b8;
   --birch-300: #d9c399;
 
+  /* Broadcast palette (overlay-sheet / overlay-bar).
+     Every hue here sits in the warm 25-45deg band — nothing green, so an OBS
+     chroma key keyed on green can never eat into the cards themselves. */
+  --sand-50: #fdf8ec;
+  --sand-100: #f4ecd8;
+  --sand-200: #e8d9b8;
+  --sand-300: #d9c399;
+  --cocoa-700: #6f4f2c;
+  --cocoa-800: #4a3320;
+  --cocoa-900: #2e2015;
+  --cocoa-line: rgba(74, 51, 32, 0.3);
+
   --ink-900: #23271c;
   --ink-600: #4c4a3d;
   --muted-600: #756e5c;
