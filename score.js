@@ -4,10 +4,18 @@ const scoreEmpty = document.getElementById('score-empty');
 const scorePreview = document.getElementById('score-preview');
 const teamPanels = document.getElementById('team-panels');
 const resetMatchBtn = document.getElementById('reset-match-btn');
+const deleteMatchBtn = document.getElementById('delete-match-btn');
 
 resetMatchBtn.addEventListener('click', () => {
   if (!confirm('全チームのスコアをリセットしますか？')) return;
   MolkkyMatch.resetMatch();
+});
+
+// Reset only zeroes the scores; this tears the whole match down so the score
+// panel returns to its empty state.
+deleteMatchBtn.addEventListener('click', () => {
+  if (!confirm('試合を削除しますか？チームとスコアがすべて消えます。')) return;
+  MolkkyMatch.endActiveMatch();
 });
 
 MolkkyMatch.subscribe(render);

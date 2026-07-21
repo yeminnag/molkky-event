@@ -5,8 +5,22 @@
 .score-toolbar {
   display: flex;
   justify-content: flex-end;
+  gap: 0.5rem;
   max-width: 1000px;
   margin: 0 0 1rem;
+}
+
+/* Destructive: tears the whole match down, so it reads red rather than birch. */
+button.danger {
+  background: var(--pin-red);
+  border: 1px solid var(--pin-red-dark);
+  color: var(--birch-100);
+  padding: 7px 10px;
+}
+
+button.danger:hover {
+  background: var(--pin-red-dark);
+  border-color: var(--pin-red-dark);
 }
 
 .score-empty {

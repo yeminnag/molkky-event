@@ -40,6 +40,8 @@ function addTeam() {
   teams.push({ id: nextTeamId++, name, players: [], collapsed: false });
   teamNameInput.value = '';
   refreshTeamsView();
+  // Re-arm the input so the admin can type the next team name immediately.
+  teamNameInput.focus();
 }
 
 function refreshTeamsView() {
@@ -106,6 +108,17 @@ function addPlayer(teamId, input) {
   team.players.push({ id: nextPlayerId++, name });
   input.value = '';
   refreshTeamsView();
+  // refreshTeamsView() rebuilds the grid inside a requestAnimationFrame, which
+  // destroys this input node. Defer the refocus to the frame AFTER that render
+  // (rAF callbacks fire in registration order) so we grab the freshly rendered
+  // input, not the one about to be thrown away. Skipped once the roster is full
+  // and the input is disabled.
+  requestAnimationFrame(() => {
+    const nextInput = teamsGrid.querySelector(
+      `.team-card[data-team-id="${teamId}"] .team-card__add-player input`,
+    );
+    if (nextInput && !nextInput.disabled) nextInput.focus();
+  });
 }
 
 function removePlayer(teamId, playerId) {
