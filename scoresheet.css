@@ -150,7 +150,7 @@
 .score-layout__side .scoresheet__cell,
 .score-layout__side .scoresheet__team,
 .score-layout__side .scoresheet__total {
-  background: #fffdf7;
+  background: var(--surface-card);
 }
 
 .score-layout__side .scoresheet__cell--latest {

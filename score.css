@@ -10,17 +10,18 @@
   margin: 0 0 1rem;
 }
 
-/* Destructive: tears the whole match down, so it reads red rather than birch. */
+/* Destructive: tears the whole match down. Uses the dedicated danger (oxblood)
+   tone so it is visually distinct from the primary-action / whose-turn red. */
 button.danger {
-  background: var(--pin-red);
-  border: 1px solid var(--pin-red-dark);
-  color: var(--birch-100);
-  padding: 7px 10px;
+  background: var(--color-danger);
+  border: 1px solid var(--color-danger-hover);
+  color: var(--text-on-action);
+  padding: 0.45rem 0.65rem;
 }
 
 button.danger:hover {
-  background: var(--pin-red-dark);
-  border-color: var(--pin-red-dark);
+  background: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
 }
 
 .score-empty {
@@ -69,19 +70,20 @@ button.danger:hover {
 .control-cards {
   max-width: 1000px;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
+  /* auto-fit so 2-3 teams fill the row instead of leaving empty columns. */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
 }
 
 .control-card {
   background: var(--birch-100);
   border: 1px solid var(--birch-300);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 1rem 1.1rem 1.15rem;
 }
 
 .control-card--active {
-  border-color: var(--pin-red);
+  border-color: var(--color-live);
   box-shadow: 0 0 0 2px rgba(195, 60, 46, 0.2);
 }
 
@@ -100,7 +102,7 @@ button.danger:hover {
   margin: 0 0 0.75rem;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--pin-red);
+  color: var(--color-live);
 }
 
 .control-card__header {
@@ -122,7 +124,7 @@ button.danger:hover {
 .control-card__score {
   font-family: var(--font-display);
   font-size: 0.9rem;
-  color: var(--pin-red);
+  color: var(--color-live);
   flex-shrink: 0;
 }
 
@@ -162,7 +164,7 @@ button.danger:hover {
   gap: 0.4rem;
   padding: 0.25rem 0.35rem;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: rgba(35, 39, 28, 0.04);
   font-size: 0.85rem;
 }
@@ -193,8 +195,8 @@ button.danger:hover {
   padding: 0.05rem 0.3rem;
   font-size: 0.62rem;
   font-weight: 700;
-  color: #fff8f2;
-  background: var(--pin-red);
+  color: var(--text-on-action);
+  background: var(--color-live);
   border-radius: 4px;
 }
 
@@ -253,7 +255,7 @@ button.danger:hover {
   font-family: var(--font-display);
   font-size: 1.2rem;
   line-height: 1.2;
-  color: var(--pin-red);
+  color: var(--color-live);
   word-break: break-word;
 }
 
@@ -295,7 +297,7 @@ button.danger:hover {
   font-family: var(--font-display);
   font-size: 1.5rem;
   line-height: 1.1;
-  color: var(--pin-red);
+  color: var(--color-live);
   word-break: break-word;
 }
 

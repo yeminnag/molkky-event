@@ -6,11 +6,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&display=swap');
 
 :root {
+  /* ===== Layer 1 — Primitives: raw values, no meaning ===== */
   --pine-950: #1b1d1c;
   --pine-900: #1e3728;
   --pine-800: #274633;
   --pine-stripe: #232624;
 
+  --birch-50: #fffdf7;
   --birch-100: #f4ecd8;
   --birch-200: #e8d9b8;
   --birch-300: #d9c399;
@@ -29,19 +31,62 @@
 
   --ink-900: #23271c;
   --ink-600: #4c4a3d;
-  --muted-600: #756e5c;
+  /* Nudged a touch darker than the old #756e5c for extra AA headroom on the
+     small (0.66-0.9rem) labels and placeholders it drives. */
+  --muted-600: #6d6653;
 
   --pin-red: #c33c2e;
   --pin-red-dark: #97281d;
   --pin-red-light: #f0d6d1;
+
+  /* Destructive tone: a deeper oxblood, deliberately distinct from pin-red so
+     "delete" never reads as the primary-action / whose-turn red. */
+  --oxblood-600: #8a2417;
+  --oxblood-700: #6d1b11;
+
+  --paper: #fff8f2;
 
   --gold: #c3922f;
   --gold-dark: #96701f;
 
   --ok-green: #3d6b3f;
 
-  --radius-card: 14px;
+  /* ===== Layer 2 — Semantic: purpose aliases (the theme lives here) ===== */
+  --surface-page: var(--pine-900);
+  --surface-card: var(--birch-50);
+  --surface-inset: var(--birch-100);
+
+  --text-primary: var(--ink-900);
+  --text-secondary: var(--ink-600);
+  --text-muted: var(--muted-600);
+  --text-on-dark: var(--birch-100);
+  --text-on-action: var(--paper);
+
+  --color-action: var(--pin-red);
+  --color-action-hover: var(--pin-red-dark);
+  --color-live: var(--pin-red); /* whose turn it is / active emphasis */
+  --color-danger: var(--oxblood-600);
+  --color-danger-hover: var(--oxblood-700);
+  --color-accent: var(--gold);
+  --color-accent-hover: var(--gold-dark);
+
+  /* ===== Spacing scale ===== */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 1.75rem;
+
+  /* ===== Radius scale ===== */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  /* Legacy aliases kept so existing references stay valid. */
+  --radius-card: var(--radius-lg);
   --radius-control: 8px;
+
   --shadow-card: 0 2px 0 rgba(23, 42, 31, 0.06), 0 8px 20px -12px rgba(23, 42, 31, 0.35);
 
   --font-display: 'Archivo Black', 'Hiragino Sans', sans-serif;
@@ -55,8 +100,8 @@
 body {
   margin: 0;
   font-family: var(--font-body);
-  color: var(--ink-900);
-  background-color: var(--pine-900);
+  color: var(--text-primary);
+  background-color: var(--surface-page);
   min-height: 100vh;
   line-height: 1.6;
 }
@@ -96,7 +141,7 @@ main {
   padding: 0 1.25rem 4rem;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: var(--space-6);
 }
 
 .card {
@@ -173,7 +218,7 @@ input[type='number'] {
   padding: 0.65rem 0.9rem;
   border: 1px solid var(--birch-300);
   border-radius: var(--radius-control);
-  background: #fffdf7;
+  background: var(--surface-card);
   color: var(--ink-900);
 }
 
@@ -194,16 +239,16 @@ button {
   font-size: 0.9rem;
   padding: 0.65rem 3rem;
   border-radius: var(--radius-control);
-  border: 1px solid var(--pin-red-dark);
-  background: var(--pin-red);
-  color: #fff8f2;
+  border: 1px solid var(--color-action-hover);
+  background: var(--color-action);
+  color: var(--text-on-action);
   cursor: pointer;
   transition: transform 0.08s ease, background 0.15s ease;
   white-space: nowrap;
 }
 
 button:hover {
-  background: var(--pin-red-dark);
+  background: var(--color-action-hover);
 }
 
 button:active {
@@ -249,7 +294,7 @@ button:disabled {
 }
 
 button.toggle {
-  background: #fffdf7;
+  background: var(--surface-card);
   color: var(--pine-900);
   border: 2px solid var(--birch-300);
 }
@@ -292,8 +337,10 @@ button.toggle.selected {
 
 .teams-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
+  /* auto-fit collapses empty tracks, so 2-3 teams fill the row instead of
+     leaving narrow cards next to blank columns (max is 4 teams). */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
   align-items: start;
   min-height: 1px;
 }
@@ -309,9 +356,9 @@ button.toggle.selected {
 
 .team-card {
   width: 100%;
-  background: #fffdf7;
+  background: var(--surface-card);
   border: 2px solid var(--birch-300);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 1rem 1.1rem 1.15rem;
   cursor: pointer;
   transition: border-color 0.12s ease, box-shadow 0.12s ease, transform 0.08s ease;
@@ -353,7 +400,7 @@ button.toggle.selected {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.8rem;
   line-height: 1;
   background: transparent;
@@ -407,7 +454,7 @@ button.toggle.selected {
   gap: 0.5rem;
   padding: 0.4rem 0.6rem;
   background: var(--birch-100);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.88rem;
 }
 
@@ -419,7 +466,7 @@ button.toggle.selected {
 .player-row__remove {
   padding: 0.2rem 0.5rem;
   font-size: 0.78rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
 
@@ -445,20 +492,20 @@ button.toggle.selected {
   padding: 2.5rem 1rem;
   color: var(--muted-600);
   border: 1px dashed var(--birch-300);
-  border-radius: 10px;
-  background: #fffdf7;
+  border-radius: var(--radius-md);
+  background: var(--surface-card);
 }
 
 .match-board {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .team-score-card {
-  background: #fffdf7;
+  background: var(--surface-card);
   border: 1px solid var(--birch-300);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 1rem 1.1rem 1.15rem;
 }
 
@@ -479,7 +526,7 @@ button.toggle.selected {
 }
 
 .team-score-card__total {
-  background: var(--pin-red);
+  background: var(--color-live);
   font-size: 0.9rem;
   min-width: 2.9rem;
   flex-shrink: 0;
@@ -525,15 +572,15 @@ button.toggle.selected {
   font-family: var(--font-display);
   font-size: 1rem;
   letter-spacing: 0.02em;
-  background: var(--gold);
-  border-color: var(--gold-dark);
+  background: var(--color-accent);
+  border-color: var(--color-accent-hover);
   color: var(--pine-950);
   box-shadow: 0 10px 24px -8px rgba(23, 42, 31, 0.55);
 }
 
 .match-start-fab:hover {
-  background: var(--gold-dark);
-  color: var(--birch-100);
+  background: var(--color-accent-hover);
+  color: var(--text-on-dark);
 }
 
 .match-start-fab:active {

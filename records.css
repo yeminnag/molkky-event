@@ -142,7 +142,7 @@
 .records-sheet .scoresheet__cell,
 .records-sheet .scoresheet__team,
 .records-sheet .scoresheet__total {
-  background: #fffdf7;
+  background: var(--surface-card);
 }
 
 .records-sheet .scoresheet__cell--latest {
