@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="scoresheet.css">
     <link rel="stylesheet" href="overlay.css">
     <link rel="stylesheet" href="celebration.css">
+    <link rel="stylesheet" href="standby.css">
     <style>
         /* Chroma-key backdrop for the combined overlay. overlay.css forces the
            background transparent for OBS, so override it here (with matching
@@ -30,6 +31,27 @@
     <section class="overlay-scoresheet" id="overlay-scoresheet">
         <div class="scoresheet" id="scoresheet"></div>
     </section>
+
+    <!-- Pre-match standby scene (shown while no match is active) -->
+    <div class="standby" id="standby">
+        <div class="standby__card">
+            <p class="standby__eyebrow">MÖLKKY</p>
+            <div class="standby__pins" aria-hidden="true">
+                <span class="skittle skittle--molkky" style="--i: 0"></span>
+                <span class="skittle" style="--i: 1">7</span>
+                <span class="skittle" style="--i: 2">9</span>
+                <span class="skittle" style="--i: 3">12</span>
+                <span class="skittle" style="--i: 4">3</span>
+                <span class="skittle" style="--i: 5">10</span>
+                <span class="skittle" style="--i: 6">6</span>
+            </div>
+            <h1 class="standby__title">まもなく試合開始</h1>
+            <p class="standby__sub">少々お待ちください</p>
+            <div class="standby__loader" role="status" aria-label="試合開始をお待ちください">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
 
     <!-- Win celebration (was overlay-win.html) -->
     <div class="win-fx" id="win-fx" role="status" aria-live="polite">
@@ -57,5 +79,6 @@
     <script src="sheet.js"></script>
     <script src="reveal.js"></script>
     <script src="celebration.js"></script>
+    <script src="standby.js"></script>
 </body>
 </html>

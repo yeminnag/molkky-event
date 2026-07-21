@@ -336,10 +336,10 @@ button.toggle.selected {
 }
 
 .teams-grid {
+  /* Four equal columns: a single team stays a tidy quarter-width card (never
+     stretches to fill the row), and all four teams always fit on one line. */
   display: grid;
-  /* auto-fit collapses empty tracks, so 2-3 teams fill the row instead of
-     leaving narrow cards next to blank columns (max is 4 teams). */
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-4);
   align-items: start;
   min-height: 1px;

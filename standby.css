@@ -1,0 +1,224 @@
+/* =========================================================
+   Mölkky overlay — pre-match standby scene
+   Shown on overlay.html while no match has started. Warm, chroma-safe
+   (no green in the artwork) so it reads cleanly over the OBS key. Driven by
+   standby.js toggling body.is-standby.
+   ========================================================= */
+
+#standby {
+  display: none;
+}
+
+body.is-standby #standby {
+  position: fixed;
+  inset: 0;
+  z-index: 20; /* below the win burst (z-index 50), above the resting scorebug */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vmin;
+}
+
+/* While waiting, keep the empty scorebug and sheet out of the frame. */
+body.is-standby #broadcast-area,
+body.is-standby #overlay-scoresheet {
+  display: none;
+}
+
+/* ---------- Card ---------- */
+
+.standby__card {
+  position: relative;
+  overflow: hidden;
+  width: min(600px, 92vw);
+  padding: clamp(2rem, 5vw, 3.25rem) clamp(1.5rem, 5vw, 3rem);
+  text-align: center;
+  background: radial-gradient(
+    125% 140% at 50% -20%,
+    var(--sand-50) 0%,
+    var(--sand-200) 62%,
+    var(--sand-300) 100%
+  );
+  border: 2px solid var(--gold);
+  border-radius: 26px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.45),
+    0 30px 60px -20px rgba(46, 32, 21, 0.6);
+}
+
+/* Slow light sweep so the card feels alive without pulling focus. */
+.standby__card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.38) 50%,
+    transparent 58%
+  );
+  transform: translateX(-120%);
+  animation: standby-sheen 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.standby__eyebrow {
+  position: relative;
+  margin: 0 0 clamp(1.25rem, 4vw, 2rem);
+  font-family: var(--font-display);
+  font-size: clamp(0.8rem, 2.4vw, 1rem);
+  letter-spacing: 0.35em;
+  text-indent: 0.35em; /* balance the trailing letter-spacing */
+  color: var(--gold-dark);
+}
+
+/* ---------- Skittles ---------- */
+
+.standby__pins {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(0.35rem, 1.5vw, 0.6rem);
+  margin: 0 auto clamp(1.5rem, 4vw, 2.25rem);
+  min-height: 96px;
+}
+
+.skittle {
+  --w: clamp(26px, 6vw, 38px);
+  position: relative;
+  width: var(--w);
+  height: calc(var(--w) * 2.05);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.35rem;
+  font-family: var(--font-display);
+  font-size: calc(var(--w) * 0.42);
+  color: var(--cocoa-800);
+  background: linear-gradient(
+    180deg,
+    var(--sand-50) 0%,
+    var(--sand-200) 55%,
+    var(--sand-300) 100%
+  );
+  border: 1px solid rgba(74, 51, 32, 0.28);
+  /* rounded, slightly domed top like a turned wooden pin */
+  border-radius: 46% 46% 22% 22% / 32% 32% 12% 12%;
+  box-shadow:
+    inset 0 3px 5px rgba(255, 255, 255, 0.55),
+    inset 0 -6px 10px rgba(74, 51, 32, 0.18),
+    0 6px 10px -4px rgba(46, 32, 21, 0.5);
+  animation: skittle-bob 2.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.16s);
+}
+
+/* The throwing pin: taller, unnumbered, rocking as if about to be thrown. */
+.skittle--molkky {
+  --w: clamp(30px, 6.6vw, 42px);
+  height: calc(var(--w) * 2.6);
+  margin-right: clamp(0.5rem, 2vw, 1rem);
+  background: linear-gradient(
+    180deg,
+    var(--sand-100) 0%,
+    var(--sand-300) 62%,
+    var(--cocoa-700) 130%
+  );
+  transform-origin: 50% 92%;
+  animation: molkky-rock 2.8s ease-in-out infinite;
+}
+
+/* ---------- Copy + loader ---------- */
+
+.standby__title {
+  position: relative;
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
+  line-height: 1.12;
+  color: var(--cocoa-900);
+}
+
+.standby__sub {
+  position: relative;
+  margin: 0 0 clamp(1.5rem, 4vw, 2rem);
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+  color: var(--cocoa-700);
+}
+
+.standby__loader {
+  position: relative;
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.standby__loader span {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--gold-dark);
+  animation: standby-dot 1.2s ease-in-out infinite;
+}
+
+.standby__loader span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.standby__loader span:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes skittle-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-2deg);
+  }
+}
+
+@keyframes molkky-rock {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(7deg);
+  }
+}
+
+/* Sweep across once, then hold off-screen until the next cycle. */
+@keyframes standby-sheen {
+  0% {
+    transform: translateX(-120%);
+  }
+  30%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes standby-dot {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-0.5rem);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .standby__card::after,
+  .skittle,
+  .skittle--molkky,
+  .standby__loader span {
+    animation: none;
+  }
+}
